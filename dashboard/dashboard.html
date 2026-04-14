@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Word of Hope Caloocan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/sidebar.css" />
+   <link rel="stylesheet" href="/assets/css/dashboard.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar-overlay"></div>
+    <div id="sidebar-container"></div>
+
+    <div class="app-main dashboard__main">
+
+      <div class="dashboard__cards">
+        <div class="card">
+          <div class="card__label">Total Members</div>
+          <div class="card__value" id="card-total-members">—</div>
+        </div>
+        <div class="card">
+          <div class="card__label">Today Attendance</div>
+          <div class="card__value" id="card-today-attendance">—</div>
+        </div>
+        <div class="card">
+          <div class="card__label">Last Sunday</div>
+          <div class="card__value" id="card-last-sunday">—</div>
+        </div>
+        <div class="card">
+          <div class="card__label">Attendance Rate</div>
+          <div class="card__value" id="card-attendance-rate">—</div>
+        </div>
+      </div>
+
+      <div class="ministry-cards" id="ministry-cards"></div>
+
+      <div class="dashboard__insights">
+        <div class="insight-card">
+          <div class="insight-title">Most Active Ministry</div>
+          <div class="insight-value" id="insight-ministry">—</div>
+          <div class="insight-subtitle">Highest participation today</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Ministry Breakdown</div>
+          <div class="insight-value" id="insight-inactive">—</div>
+          <div class="insight-subtitle">This week's attendance by ministry</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-title">Sunday Performance</div>
+          <div class="insight-value" id="insight-performance">—</div>
+          <div class="insight-subtitle">Overall trend</div>
+        </div>
+      </div>
+
+      <div id="workers-panel" class="workers-panel">
+        <div class="workers-panel__header">
+          <span class="workers-panel__title">Active Workers</span>
+          <span class="workers-panel__badge" id="workers-badge">0 online</span>
+        </div>
+        <div class="workers-panel__divider"></div>
+        <div id="workers-panel-list">
+          <div class="workers-panel__empty">No workers currently active</div>
+        </div>
+      </div>
+
+      <div class="dashboard__cal-row">
+        <div class="calendar__widget">
+          <div class="calendar__header">
+            <button class="calendar__nav" id="cal-prev">&#8249;</button>
+            <div class="calendar__month" id="cal-month-label"></div>
+            <button class="calendar__nav" id="cal-next">&#8250;</button>
+          </div>
+          <div class="calendar__grid" id="cal-grid"></div>
+        </div>
+        <div class="dashboard__today">
+          <div class="today__header">
+            <div class="today__title" id="today-title">Today's Attendance</div>
+            <div class="today__count" id="today-count"></div>
+          </div>
+          <div class="today__table-wrap">
+            <table class="today__table" id="today-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Ministry</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="today-tbody">
+                <tr><td colspan="3" class="today__empty">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard__spacer"></div>
+
+    </div><!-- /.app-main -->
+  </div><!-- /.app-shell -->
+
+  <script src="/assets/js/loader.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app-init.js"></script>
+  <script>
+    // Use Auth module for all requests
+    function getHeaders() {
+      return Auth.getHeaders();
+    }
+
+    function handle401(res) {
+      return Auth.handle401(res);
+    }
+
+    // Initialize app before running page code
+    (async function() {
+      try {
+        // Check post-login state and clear flag atomically
+        let loadingDuration = 1000; // Default 1 second
+        try {
+          const isPostLogin = sessionStorage.getItem('woh_post_login') === 'true';
+          if (isPostLogin) {
+            sessionStorage.removeItem('woh_post_login');
+            loadingDuration = 3000; // 3 seconds for post-login
+            console.log('[DASHBOARD] Post-login detected - using 3s loading duration');
+          }
+        } catch (e) {
+          console.warn('[DASHBOARD] Post-login detection failed, using default timing');
+        }
+        
+        // Set loading duration before initialization
+        AppInit.setLoadingDuration(loadingDuration);
+        
+        await AppInit.init();
+        // App is ready, run page initialization
+        initDashboard();
+      } catch (err) {
+        console.error('[DASHBOARD] Initialization failed:', err);
+        // Auth module will handle redirect
+      }
+    })();
+
+    function initDashboard() {
+      console.log('[DASHBOARD] Starting page initialization...');
+
+    // ── Helpers ──────────────────────────────────────────────
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function toISO(y, m, d) { return `${y}-${pad(m + 1)}-${pad(d)}`; }
+    function formatDisplay(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return `${months[m - 1]} ${d}, ${y}`;
+    }
+    function formatTime(t) {
+      if (!t) return '';
+      const [h, m] = t.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const hr = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+      return `${hr}:${pad(m)} ${ampm}`;
+    }
+
+    // ── Topbar date ───────────────────────────────────────────
+    const topbarDate = document.querySelector('.topbar__date');
+    if (topbarDate) topbarDate.textContent = new Date().toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    // ── Summary cards ─────────────────────────────────────────
+    async function fetchSummary() {
+      try {
+        const res = await fetch('/api/dashboard/summary', { headers: getHeaders() });
+        const data = await res.json();
+        if (handle401(res) || !res.ok) return;
+        document.getElementById('card-total-members').textContent    = data.total_members ?? '—';
+        document.getElementById('card-today-attendance').textContent = data.today_attendance ?? '—';
+        document.getElementById('card-attendance-rate').textContent  = data.attendance_rate != null ? data.attendance_rate + '%' : '—';
+        const insightMinistry = document.getElementById('insight-ministry');
+        if (insightMinistry) insightMinistry.textContent = data.top_ministry ?? '—';
+      } catch {}
+    }
+
+    // ── Attendance table — unified (today or selected date) ───
+    async function loadAttendanceByDate(date) {
+      const tbody = document.getElementById('today-tbody');
+      const titleEl = document.getElementById('today-title');
+      const countEl = document.getElementById('today-count');
+      if (!tbody) return;
+
+      const isToday = !date;
+      const url = isToday
+        ? '/api/dashboard/today'
+        : `/api/dashboard/attendance-by-date?date=${date}`;
+
+      if (titleEl) {
+        titleEl.textContent = isToday ? "Today's Attendance" : `Attendance — ${formatDisplay(date)}`;
+      }
+      if (countEl) countEl.textContent = '';
+      tbody.innerHTML = '<tr><td colspan="3" class="today__empty">Loading...</td></tr>';
+
+      try {
+        console.log('Fetching:', url);
+        const res = await fetch(url, { headers: getHeaders() });
+        if (handle401(res)) return;
+        console.log('Response status:', res.status, res.ok);
+        const text = await res.text();
+        console.log('Response body:', text.slice(0, 200));
+        let data;
+        try { data = JSON.parse(text); } catch { data = {}; }
+        const rows = Array.isArray(data.attendance) ? data.attendance : [];
+
+        tbody.innerHTML = '';
+
+        if (rows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="3" class="today__empty">No attendance recorded${isToday ? ' today' : ' for this date'}</td></tr>`;
+          return;
+        }
+
+        if (countEl) countEl.textContent = `${rows.length} present`;
+        rows.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${r.first_name} ${r.last_name}</td><td class="col-ministry">${r.ministry}</td><td class="col-time">${formatTime(r.attendance_time)}</td>`;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('loadAttendanceByDate error:', err, 'url:', url);
+        tbody.innerHTML = '<tr><td colspan="3" class="today__empty">Could not load attendance</td></tr>';
+      }
+    }
+
+    // ── Calendar data from API ────────────────────────────────
+    let datesWithData = new Set();
+    let selectedDate = null;
+    const today = new Date();
+    let currentYear = today.getFullYear();
+    let currentMonth = today.getMonth();
+
+    async function fetchCalendarMonth(year, month) {
+      const monthStr = `${year}-${pad(month + 1)}`;
+      try {
+        const res = await fetch(`/api/dashboard/calendar?month=${monthStr}`, { headers: getHeaders() });
+        const data = await res.json();
+        if (handle401(res)) { return; }
+        if (data.status === 'success') {
+          datesWithData = new Set(data.dates.map(r => {
+            const d = new Date(r.attendance_date);
+            return toISO(d.getFullYear(), d.getMonth(), d.getDate());
+          }));
+        }
+      } catch (e) {}
+      renderCalendar();
+    }
+
+    // ── Calendar render ───────────────────────────────────────
+    function renderCalendar() {
+      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('cal-month-label').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      const grid = document.getElementById('cal-grid');
+      grid.innerHTML = '';
+      ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'calendar__day-name';
+        el.textContent = d;
+        grid.appendChild(el);
+      });
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const todayISO = toISO(today.getFullYear(), today.getMonth(), today.getDate());
+      for (let i = 0; i < firstDay; i++) {
+        const el = document.createElement('div');
+        el.className = 'calendar__day calendar__day--empty';
+        grid.appendChild(el);
+      }
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = toISO(currentYear, currentMonth, d);
+        const el = document.createElement('div');
+        let cls = 'calendar__day';
+        if (iso === todayISO) cls += ' calendar__day--today';
+        if (iso === selectedDate) cls += ' calendar__day--selected';
+        if (datesWithData.has(iso)) cls += ' calendar__day--has-data';
+        el.className = cls;
+        el.textContent = d;
+        el.addEventListener('click', () => {
+          selectedDate = iso;
+          renderCalendar();
+          loadAttendanceByDate(iso);
+        });
+        grid.appendChild(el);
+      }
+    }
+
+    // ── Last Sunday attendance + ministry breakdown ───────────
+    async function fetchLastSunday() {
+      try {
+        const res = await fetch('/api/dashboard/weekly', { headers: getHeaders() });
+        const data = await res.json();
+        if (handle401(res) || !res.ok) return;
+        document.getElementById('card-last-sunday').textContent = data.weekly_attendance ?? '—';
+        const insightInactive = document.getElementById('insight-inactive');
+        if (insightInactive && Array.isArray(data.ministries) && data.ministries.length > 0) {
+          insightInactive.textContent = data.ministries.map(m => `${m.ministry} (${m.count})`).join(', ');
+          insightInactive.closest('.insight-card')?.querySelector('.insight-title')
+            && (insightInactive.closest('.insight-card').querySelector('.insight-title').textContent = 'Ministry Breakdown');
+          insightInactive.closest('.insight-card')?.querySelector('.insight-subtitle')
+            && (insightInactive.closest('.insight-card').querySelector('.insight-subtitle').textContent = 'This week\'s attendance by ministry');
+        }
+      } catch {}
+    }
+
+    // ── Calendar nav ──────────────────────────────────────────
+    document.getElementById('cal-prev').addEventListener('click', () => {
+      if (--currentMonth < 0) { currentMonth = 11; currentYear--; }
+      fetchCalendarMonth(currentYear, currentMonth);
+    });
+    document.getElementById('cal-next').addEventListener('click', () => {
+      if (++currentMonth > 11) { currentMonth = 0; currentYear++; }
+      fetchCalendarMonth(currentYear, currentMonth);
+    });
+
+    // ── Ministry Cards ────────────────────────────────────────
+    const MINISTRIES = ['Multimedia','Praise and Worship','Medical','Children','Young Professional','Pastor','Youth Alive'];
+    
+    async function loadMinistryCards() {
+      const container = document.getElementById('ministry-cards');
+      if (!container) return;
+      try {
+        const res = await fetch('/api/members', { headers: getHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        const members = Array.isArray(data.members) ? data.members : [];
+        const total = members.length || 1;
+
+        const counts = {};
+        MINISTRIES.forEach(m => { counts[m] = 0; });
+        members.forEach(m => { if (counts[m.ministry] !== undefined) counts[m.ministry]++; });
+
+        container.innerHTML = '';
+
+        MINISTRIES.forEach(name => {
+          const count = counts[name] || 0;
+          const pct = Math.round((count / total) * 100);
+
+          const card = document.createElement('div');
+          card.className = 'min-card';
+          card.title = name;
+          card.innerHTML = `
+            <div class="min-card__name">${name}</div>
+            <div class="min-card__count">${count}</div>
+            <div class="min-card__bar-track">
+              <div class="min-card__bar-fill" style="width:${pct}%"></div>
+            </div>
+            <div class="min-card__pct">${pct}% of total</div>`;
+
+          container.appendChild(card);
+        });
+      } catch {}
+    }
+
+      // ── Init ──────────────────────────────────────────────────
+      fetchSummary();
+      loadAttendanceByDate(null);
+      fetchLastSunday();
+      loadMinistryCards();
+      fetchCalendarMonth(currentYear, currentMonth);
+
+      // ── Active Workers panel (admin only) ─────────────────────
+      const role = localStorage.getItem('woh_role') || '';
+      if (role === 'admin') {
+        const panel = document.getElementById('workers-panel');
+        if (panel) panel.style.display = 'block';
+        fetchActiveWorkers();
+        setInterval(fetchActiveWorkers, 30000);
+      }
+
+      setInterval(pingSession, 120000);
+      window.addEventListener('beforeunload', logoutSession);
+
+      console.log('[DASHBOARD] Page initialization complete');
+    }
+
+    async function fetchActiveWorkers() {
+      try {
+        const res = await fetch('/api/sessions/active', { headers: getHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        const list = document.getElementById('workers-panel-list');
+        const badge = document.getElementById('workers-badge');
+        const workers = Array.isArray(data.workers) ? data.workers : [];
+        if (badge) badge.textContent = workers.length + ' online';
+        if (!list) return;
+        if (workers.length === 0) {
+          list.innerHTML = '<div class="workers-panel__empty">No workers currently active</div>';
+          return;
+        }
+        list.innerHTML = '';
+        workers.forEach(w => {
+          const row = document.createElement('div');
+          row.className = 'workers-panel__row';
+          row.innerHTML = `<span class="workers-panel__dot"></span>
+            <span class="workers-panel__email">${w.email}</span>
+            <span class="workers-panel__time">Since ${formatTime(new Date(w.logged_in_at).toTimeString().slice(0,8))}</span>`;
+          list.appendChild(row);
+        });
+      } catch {}
+    }
+
+    function pingSession() {
+      fetch('/api/sessions/ping', {
+        method: 'POST',
+        headers: getHeaders()
+      }).catch(() => {});
+    }
+
+    function logoutSession() {
+      navigator.sendBeacon('/api/sessions/logout',
+        JSON.stringify({ token: Auth.getToken() })
+      );
+    }
+  </script>
+</body>
+</html>

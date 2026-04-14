@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code — Word of Hope Caloocan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/registration.css?v=6" />
+</head>
+<body>
+  <div class="page qr-page">
+    <h2 class="qr-page__title">Membership ID Card</h2>
+    <div class="id-card-container">
+      <div class="id-card">
+        <div class="id-card__left">
+          <div class="id-card__header">
+            <img class="header-icon" src="../WOHLOGO.png" alt="" width="14" height="14" />
+            Word of Hope ID
+          </div>
+          <div class="id-card__divider"></div>
+          <div class="id-card__content">
+            <span class="label">MEMBER NAME</span>
+            <h1 id="member-name" class="id-card__name"></h1>
+            <span class="label">MINISTRY</span>
+            <p id="member-ministry" class="id-card__ministry"></p>
+            <span class="label">ID NUMBER</span>
+            <p id="member-qr-value" class="id-card__id-number"></p>
+          </div>
+        </div>
+        <div class="id-card__right">
+          <div class="qr-wrapper">
+            <div id="qrcode" class="qr-container"></div>
+          </div>
+        </div>
+      </div>
+      <div class="button-group">
+        <button id="download-btn" type="button" class="btn-print">Download ID Card</button>
+        <button id="another-btn" type="button" class="btn-secondary">Register Another Member</button>
+      </div>
+    </div>
+  </div>
+  <script src="../assets/libs/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dom-to-image@2.6.0/dist/dom-to-image.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const stored = sessionStorage.getItem('registeredMember');
+      if (!stored) {
+        window.location.href = 'registration.html';
+        return;
+      }
+      let member;
+      try {
+        member = JSON.parse(stored);
+      } catch {
+        window.location.href = 'registration.html';
+        return;
+      }
+      const fullName = `${member.first_name} ${member.last_name}`;
+      document.getElementById('member-name').textContent = fullName;
+      document.getElementById('member-ministry').textContent = member.ministry;
+      document.getElementById('member-qr-value').textContent = member.qr_code;
+      // Generate QR code
+      new QRCode(document.getElementById('qrcode'), {
+        text: member.qr_code,
+        width: 150,
+        height: 150,
+      });
+
+      // Download ID Card functionality
+      document.getElementById('download-btn').addEventListener('click', async () => {
+        try {
+          const idCard = document.querySelector('.id-card');
+          const button = document.getElementById('download-btn');
+          
+          // Disable button during processing
+          button.disabled = true;
+          button.textContent = 'Generating...';
+          
+          // Wait for everything to load and stabilize layout
+          await document.fonts.ready;
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Force layout recalculation to prevent text overlap
+          idCard.style.display = 'none';
+          idCard.offsetHeight; // Trigger reflow
+          idCard.style.display = 'flex';
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Export with stable layout
+          const dataUrl = await domtoimage.toPng(idCard, {
+            quality: 1.0,
+            bgcolor: '#ffffff',
+            pixelRatio: 3,
+            style: {
+              // Ensure proper text rendering
+              'font-display': 'block',
+              'text-rendering': 'optimizeLegibility',
+              '-webkit-font-smoothing': 'antialiased'
+            }
+          });
+          
+          // Direct download
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          const safeName = fullName.replace(/[^a-zA-Z0-9]/g, '_');
+          link.download = `WOH_ID_${safeName}_${member.qr_code}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          button.disabled = false;
+          button.textContent = 'Download ID Card';
+          
+        } catch (error) {
+          console.error('Download failed:', error);
+          
+          // Fallback with layout stabilization
+          try {
+            const idCard = document.querySelector('.id-card');
+            
+            // Force layout stabilization
+            idCard.style.display = 'none';
+            idCard.offsetHeight;
+            idCard.style.display = 'flex';
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const dataUrl = await domtoimage.toPng(idCard, {
+              bgcolor: '#ffffff',
+              pixelRatio: 2
+            });
+            
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            const safeName = fullName.replace(/[^a-zA-Z0-9]/g, '_');
+            link.download = `WOH_ID_${safeName}_${member.qr_code}.png`;
+            link.click();
+            
+          } catch (fallbackError) {
+            alert('Export failed. Please try again.');
+          }
+          
+          const button = document.getElementById('download-btn');
+          button.disabled = false;
+          button.textContent = 'Download ID Card';
+        }
+      });
+      document.getElementById('another-btn').addEventListener('click', () => {
+        window.location.href = 'registration.html';
+      });
+    });
+  </script>
+</body>
+</html>

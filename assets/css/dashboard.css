@@ -1,0 +1,912 @@
+
+    :root {
+      --color-primary: #10b981;
+      --color-page-bg: #f3f4f6;
+      --color-surface: #ffffff;
+      --color-text: #1f2937;
+      --color-text-muted: #6b7280;
+      --color-border: #e5e7eb;
+      --color-row-alt: #f9fafb;
+      --color-hover-bg: #f9fafb;
+      --color-badge-bg: #ecfdf5;
+      --color-time: #6b7280;
+      --radius-card: 12px;
+      --radius-control: 8px;
+      --radius-badge: 20px;
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+      --font-sans: "Inter", sans-serif;
+      --sp-xs: 8px;
+      --sp-sm: 12px;
+      --sp-md: 16px;
+      --sp-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; height: 100%; }
+
+    body {
+      font-family: var(--font-sans);
+      font-weight: 400;
+      color: var(--color-text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Summary Cards ── */
+    .dashboard__cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: var(--sp-md) var(--sp-lg) 0;
+    }
+
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card__label {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .card__value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    /* ── Insights ── */
+    .dashboard__insights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 10px var(--sp-lg) 0;
+    }
+
+    .insight-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .insight-title {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .insight-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .insight-subtitle {
+      font-size: 10px;
+      color: var(--color-text-muted);
+    }
+
+    /* ── Calendar + Attendance side by side ── */
+    .dashboard__cal-row {
+      display: flex;
+      gap: 12px;
+      padding: 10px var(--sp-lg) 0;
+      align-items: flex-start;
+    }
+
+    .dashboard__cal-row .calendar__widget {
+      width: 240px;
+      flex-shrink: 0;
+    }
+
+    .dashboard__cal-row .dashboard__today {
+      flex: 1;
+      min-width: 0;
+      padding: 0;
+    }
+
+    .dashboard__today {
+      padding: 10px var(--sp-lg) 0;
+    }
+
+    /* Calendar widget */
+    .calendar__widget {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      padding: 10px;
+    }
+
+    .calendar__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .calendar__month {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .calendar__nav {
+      background: none;
+      border: none;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background 0.15s ease, color 0.15s ease;
+      padding: 0;
+    }
+
+    .calendar__nav:hover {
+      background: var(--color-hover-bg);
+      color: var(--color-text);
+    }
+
+    .calendar__grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+    }
+
+    .calendar__day-name {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-align: center;
+      padding: 3px 0;
+      text-transform: uppercase;
+    }
+
+    .calendar__day {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .calendar__day:hover { background: var(--color-hover-bg); color: var(--color-text); }
+    .calendar__day--empty { cursor: default; }
+    .calendar__day--empty:hover { background: none; }
+    .calendar__day--today { font-weight: 600; color: var(--color-primary); }
+    .calendar__day--selected { background: var(--color-primary); color: #fff; font-weight: 600; }
+    .calendar__day--selected:hover { background: #059669; color: #fff; }
+
+    .calendar__day--has-data { position: relative; }
+    .calendar__day--has-data::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+    .calendar__day--selected.calendar__day--has-data::after { background: #fff; }
+
+    /* Attendance view (below calendar) */
+    .calendar__view {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      padding: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .calendar__view-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+
+    .calendar__view-empty {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    .attendance-item {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .attendance-item:last-child { border-bottom: none; }
+
+    .attendance-item .name {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .attendance-item .meta {
+      font-size: 10px;
+      color: var(--color-text-muted);
+      margin-top: 1px;
+    }
+
+    /* Calendar column (widget + view stacked) */
+    .calendar__column {
+      flex-shrink: 0;
+    }
+
+    .calendar__view {
+      flex: 1;
+      min-width: 0;
+      max-height: none;
+      height: auto;
+    }
+
+    /* Charts column (right) */
+    .charts__column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .chart {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chart__title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .chart__canvas {
+      height: 110px;
+      position: relative;
+    }
+
+    .chart__stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 2px;
+    }
+
+    .chart__stat {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .chart__stat span {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .chart__stat--peak span { color: var(--color-primary); }
+    .line-chart svg { width: 100%; height: 100%; }
+
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .bar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .bar {
+      width: 100%;
+      background: var(--color-primary);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.85;
+      transition: opacity 0.15s ease;
+    }
+
+    .bar:hover { opacity: 1; }
+
+    .bar-label {
+      font-size: 9px;
+      color: var(--color-text-muted);
+    }
+
+    .monthly-chart {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .month-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .month-group__label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding-bottom: 2px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .month-group__bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 80px;
+    }
+
+    .month-bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .month-bar {
+      width: 100%;
+      background: var(--color-primary);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.82;
+      transition: opacity 0.15s ease;
+    }
+
+    .month-bar:hover { opacity: 1; }
+
+    .month-bar--low  { background: #f59e0b; }
+    .month-bar--peak { background: #059669; opacity: 1; }
+
+    .month-bar-val {
+      font-size: 8px;
+      color: var(--color-text-muted);
+    }
+
+    .month-bar-sub {
+      font-size: 8px;
+      color: var(--color-text-muted);
+    }
+
+    /* ── Today's Attendance table ── */
+    .dashboard__today {
+      padding: 10px var(--sp-lg) 0;
+    }
+
+    .today__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .today__title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .today__count {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    .today__table-wrap {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      overflow: hidden;
+    }
+
+    .today__table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .today__table thead th {
+      padding: 8px 12px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      background: var(--color-row-alt);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .today__table tbody td {
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .today__table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .today__table .col-ministry {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    .today__table .col-time {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .today__empty {
+      padding: 20px 12px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    @media screen and (max-width: 900px) {
+      .dashboard__cal-row { flex-direction: column; }
+      .dashboard__cal-row .calendar__widget { width: 100%; }
+      .dashboard__cards, .dashboard__insights { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ── Mobile (<768px) ── */
+    @media screen and (max-width: 767px) {
+      .dashboard__cards {
+        padding: 6px 10px 0;
+        gap: 4px;
+      }
+
+      .dashboard__insights {
+        padding: 4px 10px 0;
+        gap: 4px;
+        order: 3;
+      }
+
+      .dashboard__cal-row {
+        padding: 4px 10px 0;
+        order: 2;
+      }
+
+      .calendar__widget,
+      .calendar__column {
+        display: none;
+      }
+
+      .workers-panel {
+        margin: 4px 10px 0;
+        padding: 5px;
+        border-radius: 8px;
+      }
+
+      .workers-panel__header {
+        margin-bottom: 0;
+      }
+
+      .workers-panel__title {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+
+      .workers-panel__badge {
+        font-size: 10px;
+      }
+
+
+      .workers-panel__row {
+        padding: 0px 0;
+        gap: 8px;
+      }
+
+      .workers-panel__dot {
+        width: 6px;
+        height: 6px;
+      }
+
+      .workers-panel__email {
+        font-size: 11px;
+      }
+
+      .workers-panel__time {
+        font-size: 9px;
+      }
+
+      .workers-panel__empty {
+        font-size: 11px;
+      }
+
+      .dashboard__today {
+        padding: 0;
+        width: 100%;
+      }
+
+      .today__header {
+        margin-bottom: 4px;
+      }
+
+      .today__title {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--color-text-muted);
+      }
+
+      .today__count {
+        display: none;
+      }
+
+      .today__table-wrap {
+        background: transparent;
+        border: none;
+        border-radius: 0;
+      }
+
+      .today__table thead {
+        display: none;
+      }
+
+      .today__table tbody td {
+        padding: 0;
+        border: none;
+        display: block;
+      }
+
+      .today__table tbody tr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        padding: 1px 2px;
+        margin-bottom: 3px;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+
+      .today__table tbody tr:hover {
+        border-color: var(--color-primary);
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);
+        transform: translateY(-1px);
+      }
+
+      .today__table tbody tr:last-child {
+        margin-bottom: 0;
+      }
+
+      .today__table tbody td:first-child {
+        font-size: 9px;
+        font-weight: 100;
+        color: var(--color-text);
+        flex: 1;
+      }
+
+      .today__table .col-ministry {
+        display: none;
+      }
+
+      .today__table .col-time {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--color-primary);
+        background: var(--color-badge-bg);
+        padding: 2px 6px;
+        border-radius: 4px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .today__empty {
+        display: block;
+        padding: 8px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        font-size: 11px;
+      }
+
+      .card {
+        padding: 8px 10px;
+      }
+
+      .card__label {
+        font-size: 9px;
+        margin-bottom: 1px;
+      }
+
+      .card__value {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .insight-card {
+        padding: 8px 10px;
+      }
+
+      .insight-title {
+        font-size: 9px;
+        margin-bottom: 1px;
+      }
+
+      .insight-value {
+        font-size: 14px;
+        line-height: 1.1;
+      }
+
+      .insight-subtitle {
+        font-size: 8px;
+        margin-top: 1px;
+      }
+    }
+
+    /* ── Active Workers panel ── */
+    .workers-panel {
+      display: none;
+      margin: 0px var(--sp-lg) 0;
+      background: #ffffff;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      padding: 5px;
+    }
+
+    .workers-panel__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0;
+    }
+
+    .workers-panel__title {
+      font-size: 10px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .workers-panel__badge {
+      background: #ecfdf5;
+      color: #10b981;
+      font-size: 9px;
+      font-weight: 500;
+      border-radius: 20px;
+    }
+
+    .workers-panel__divider {
+      height: 1px;
+      background: #f3f4f6;
+     
+    }
+
+    .workers-panel__row {
+      display: flex;
+      align-items: center;
+      padding: 0px 0;
+      border-bottom: 1px solid #f9fafb;
+    }
+
+    .workers-panel__row:last-child { border-bottom: none; }
+
+    .workers-panel__dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #10b981;
+      flex-shrink: 0;
+      animation: wdot-pulse 2s infinite;
+    }
+
+    @keyframes wdot-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .workers-panel__email {
+      font-size: 9px;
+      color: #1f2937;
+      flex: 1;
+    }
+
+    .workers-panel__time {
+      font-size: 8px;
+      color: #9ca3af;
+    }
+
+    .workers-panel__empty {
+      font-size: 13px;
+      color: #9ca3af;
+      text-align: center;
+      padding: 5px 0;
+    }
+
+/* ── Ministry Cards ── */
+.ministry-cards {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  padding: 0 var(--sp-lg);
+  margin-top: 16px;
+  margin-bottom: 14px;
+}
+
+.min-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px 10px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.min-card:hover {
+  border-color: #a7f3d0;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.08);
+}
+
+.min-card.is-active {
+  border-color: var(--color-primary);
+  background: #f0fdf4;
+  box-shadow: 0 2px 12px rgba(16,185,129,0.12);
+}
+
+.min-card__name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.min-card.is-active .min-card__name { color: var(--color-primary); }
+
+.min-card__count {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.min-card.is-active .min-card__count { color: var(--color-primary); }
+
+.min-card__bar-track {
+  height: 3px;
+  background: var(--color-border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.min-card__bar-fill {
+  height: 100%;
+  background: #d1fae5;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.min-card.is-active .min-card__bar-fill { background: var(--color-primary); }
+
+.min-card__pct {
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+.min-card.is-active .min-card__pct { color: var(--color-primary); }
+
+@media screen and (max-width: 900px) {
+  .ministry-cards { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media screen and (max-width: 767px) {
+  .ministry-cards { 
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    padding: 0 4px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .min-card {
+    padding: 5px 6px;
+    gap: 2px;
+    border-radius: 6px;
+    border-width: 1px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .min-card__name {
+    font-size: 9px;
+    line-height: 1.2;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .min-card__count {
+    font-size: 10px;
+    flex-shrink: 0;
+    margin-left: 4px;
+    font-weight: 600;
+  }
+
+  .min-card__bar-track {
+    display: none;
+  }
+
+  .min-card__pct {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .ministry-cards {
+    gap: 4px;
+    padding: 0 3px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
+  .min-card {
+    padding: 4px 5px;
+    gap: 2px;
+    border-radius: 5px;
+  }
+
+  .min-card__name {
+    font-size: 8px;
+  }
+
+  .min-card__count {
+    font-size: 9px;
+    margin-left: 3px;
+    font-weight: 600;
+  }
+}

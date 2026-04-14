@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Members — Word of Hope Caloocan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/sidebar.css" />
+  <style>
+    :root {
+      --color-primary: #10b981;
+      --color-page-bg: #f3f4f6;
+      --color-surface: #ffffff;
+      --color-text: #1f2937;
+      --color-text-muted: #6b7280;
+      --color-border: #e5e7eb;
+      --color-row-alt: #f9fafb;
+      --color-hover-bg: #f9fafb;
+      --color-badge-bg: #ecfdf5;
+      --radius-card: 12px;
+      --radius-control: 8px;
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.08);
+      --font-sans: "Inter", sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; min-height: 100%; }
+    body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-page-bg); -webkit-font-smoothing: antialiased; }
+
+    .page { max-width: 1120px; margin: 0 auto; padding: 0 24px 32px; }
+
+    /* ── Topbar ── */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 12px 20px;
+      background: var(--color-surface); border-bottom: 1px solid var(--color-border);
+    }
+    .page-header__left { display: flex; align-items: center; gap: 10px; }
+    .page-header__title { margin: 0; font-size: 15px; font-weight: 600; color: var(--color-text); }
+    .page-header__count { font-size: 12px; color: var(--color-text-muted); }
+    .header-divider { display: none; }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 10px;
+      margin-bottom: 14px;
+      margin-top: 16px;
+      align-items: center;
+    }
+    .search-wrap { position: relative; }
+    .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--color-text-muted); pointer-events: none; }
+    .search-input {
+      width: 100%; height: 36px; padding: 0 10px 0 32px;
+      font-family: var(--font-sans); font-size: 13px; color: var(--color-text);
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-control); outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-input::placeholder { color: #9ca3af; }
+    .search-input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 1px rgba(16,185,129,0.2); }
+    .filter-select {
+      height: 36px; padding: 0 10px; font-family: var(--font-sans); font-size: 13px;
+      color: var(--color-text); background: var(--color-surface);
+      border: 1px solid var(--color-border); border-radius: var(--radius-control);
+      outline: none; cursor: pointer; appearance: none; min-width: 140px;
+    }
+    .filter-select:focus { border-color: var(--color-primary); }
+
+    /* ── Table ── */
+    .table-card {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-card); overflow: hidden; box-shadow: var(--shadow-card);
+    }
+    .members-table { width: 100%; border-collapse: collapse; }
+    .members-table thead th {
+      padding: 9px 12px; font-size: 11px; font-weight: 600; color: var(--color-text-muted);
+      text-align: left; text-transform: uppercase; letter-spacing: 0.45px;
+      background: var(--color-row-alt); border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+    .members-table tbody td {
+      padding: 10px 12px; font-size: 13px; color: var(--color-text);
+      border-bottom: 1px solid var(--color-border); vertical-align: middle;
+    }
+    .members-table tbody tr:last-child td { border-bottom: none; }
+    .members-table tbody tr:hover td { background: var(--color-hover-bg); }
+    .members-table .col-muted { font-size: 12px; color: var(--color-text-muted); }
+    .members-table .col-actions { width: 1%; white-space: nowrap; }
+
+    .ministry-badge {
+      display: inline-block; padding: 2px 8px; font-size: 11px; font-weight: 500;
+      color: var(--color-primary); background: var(--color-badge-bg);
+      border-radius: 999px;
+    }
+
+    .status-badge {
+      display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 600;
+      border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .status-badge--visitor { background: #fff7ed; color: #c2410c; }
+    .status-badge--active  { background: #ecfdf5; color: #059669; }
+
+    .qr-code-text {
+      font-size: 11px; color: var(--color-text-muted);
+      font-family: monospace; letter-spacing: 0.3px;
+    }
+
+    .action-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--color-border);
+      background: var(--color-surface); cursor: pointer; color: var(--color-text-muted);
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .action-btn svg { width: 14px; height: 14px; }
+    .action-btn:hover { background: var(--color-hover-bg); color: var(--color-text); border-color: #d1d5db; }
+    .action-btn--delete:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+    .action-btns { display: flex; gap: 6px; }
+
+    .empty-row td { padding: 32px 12px; text-align: center; color: var(--color-text-muted); font-size: 13px; }
+
+    /* ── Edit Modal ── */
+    .edit-modal {
+      position: fixed; inset: 0; z-index: 300;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    .edit-modal[hidden] { display: none; }
+    .edit-modal__backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); }
+    .edit-modal__box {
+      position: relative; z-index: 1; width: 100%; max-width: 420px;
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-card); overflow: hidden; box-shadow: var(--shadow-card);
+      animation: modalIn 0.2s ease forwards; opacity: 0; transform: translateY(8px);
+    }
+    @keyframes modalIn { to { opacity: 1; transform: translateY(0); } }
+    .edit-modal__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--color-border);
+    }
+    .edit-modal__title { margin: 0; font-size: 14px; font-weight: 600; color: var(--color-text); }
+    .edit-modal__close {
+      width: 28px; height: 28px; border-radius: var(--radius-control);
+      border: 1px solid var(--color-border); background: var(--color-row-alt);
+      cursor: pointer; font-size: 13px; color: var(--color-text-muted);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s ease;
+    }
+    .edit-modal__close:hover { background: var(--color-border); color: var(--color-text); }
+    .edit-modal__body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+    .edit-field { display: flex; flex-direction: column; gap: 6px; }
+    .edit-field label { font-size: 13px; font-weight: 500; color: var(--color-text); }
+    .edit-field input, .edit-field select {
+      height: 40px; padding: 0 12px; font-family: var(--font-sans); font-size: 14px;
+      color: var(--color-text); background: var(--color-surface);
+      border: 1px solid var(--color-border); border-radius: var(--radius-control);
+      outline: none; appearance: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .edit-field input:focus, .edit-field select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(16,185,129,0.2);
+    }
+    .edit-modal__error { font-size: 12px; color: #dc2626; opacity: 0; transition: opacity 0.2s ease; min-height: 16px; }
+    .edit-modal__footer { display: flex; gap: 8px; padding: 0 18px 18px; }
+    .btn-save {
+      flex: 1; height: 40px; background: var(--color-primary); color: #fff;
+      border: none; border-radius: var(--radius-control); font-family: var(--font-sans);
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-save:hover { background: #059669; }
+    .btn-save:disabled { opacity: 0.65; cursor: default; }
+    .btn-cancel-edit {
+      height: 40px; padding: 0 16px; background: var(--color-row-alt);
+      color: var(--color-text-muted); border: 1px solid var(--color-border);
+      border-radius: var(--radius-control); font-family: var(--font-sans);
+      font-size: 13px; cursor: pointer; transition: background 0.15s ease;
+    }
+    .btn-cancel-edit:hover { background: var(--color-border); color: var(--color-text); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; top: 20px; right: 20px; z-index: 1000;
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 14px; border-radius: var(--radius-card);
+      font-size: 13px; font-weight: 500; max-width: 300px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      animation: toastIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      overflow: hidden;
+    }
+    .toast.is-hiding { animation: toastOut 0.25s ease forwards; }
+    .toast.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .toast.error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .toast__icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .toast.success .toast__icon { background: #16a34a; color: #fff; }
+    .toast.error   .toast__icon { background: #dc2626; color: #fff; }
+    .toast__progress { position: absolute; bottom: 0; left: 0; height: 3px; border-radius: 0 0 var(--radius-card) var(--radius-card); animation: toastProgress 3s linear forwards; }
+    .toast.success .toast__progress { background: #16a34a; }
+    .toast.error   .toast__progress { background: #dc2626; }
+    @keyframes toastIn  { from { transform: translateX(calc(100% + 24px)); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(calc(100% + 24px)); opacity: 0; } }
+    @keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
+
+    /* ── Sidebar toggle ── */
+    .sidebar-toggle-btn {
+      display: none; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border: none; background: none;
+      cursor: pointer; border-radius: 6px; color: var(--color-text);
+      transition: background 0.15s ease;
+    }
+    .sidebar-toggle-btn:hover { background: var(--color-hover-bg); }
+    .sidebar-toggle-btn svg { width: 18px; height: 18px; }
+
+    /* ── Mobile accordion list (hidden on desktop) ── */
+    .mobile-list {
+      display: none;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+
+    @media screen and (max-width: 767px) {
+      .app-shell .page {
+        padding: 8px 0 12px;
+        margin: 0;
+      }
+
+      .main {
+        padding: 0;
+        gap: 6px;
+      }
+
+      .sidebar-toggle-btn { display: flex; }
+      
+      .toolbar { 
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin: 0 4px 6px;
+        padding: 0;
+        align-items: stretch;
+      }
+
+      .search-wrap {
+        width: 100%;
+      }
+
+      .filter-row {
+        display: flex;
+        gap: 5px;
+      }
+
+      .search-wrap svg {
+        width: 12px;
+        height: 12px;
+        left: 7px;
+      }
+
+      .search-input {
+        height: 32px;
+        padding: 0 7px 0 26px;
+        font-size: 11px;
+      }
+
+      .filter-select { 
+        height: 32px;
+        padding: 0 6px;
+        font-size: 10px;
+        min-width: 85px;
+        flex: 1;
+      }
+
+      /* Hide desktop table on mobile */
+      .table-card { 
+        display: none;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      /* Show mobile list */
+      .mobile-list { 
+        display: block;
+        margin: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: visible;
+      }
+
+      /* Mobile card styles */
+      .m-card {
+        background: transparent !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-top: none !important;
+      }
+
+      .m-card:first-child {
+        border-top: none !important;
+      }
+
+      .m-card:last-child {
+        border-bottom: none !important;
+      }
+
+      .m-card__summary {
+        padding: 5px 4px !important;
+        gap: 5px !important;
+      }
+
+      .m-card__name {
+        font-size: 11px !important;
+      }
+
+      .m-card__chevron {
+        width: 11px !important;
+        height: 11px !important;
+      }
+
+      .m-card__details-inner {
+        padding: 4px 4px 6px !important;
+        gap: 3px !important;
+        background: transparent !important;
+        border-top: 1px solid #f3f4f6 !important;
+      }
+
+      .m-card__row {
+        padding: 2px 0 !important;
+      }
+
+      .m-card__row .m-label {
+        font-size: 9px !important;
+      }
+
+      .m-card__row .m-value {
+        font-size: 10px !important;
+      }
+
+      .m-card__actions {
+        gap: 5px !important;
+        margin-top: 2px !important;
+      }
+
+      .m-action-btn {
+        height: 24px !important;
+        padding: 0 8px !important;
+        font-size: 9px !important;
+      }
+
+      .status-badge {
+        font-size: 8px !important;
+        padding: 1px 5px !important;
+      }
+    }
+
+    @media screen and (max-width: 479px) {
+      .app-shell .page {
+        padding: 6px 0 10px;
+        margin: 0;
+      }
+
+      .main {
+        padding: 0;
+        gap: 5px;
+      }
+
+      .toolbar {
+        gap: 5px;
+        margin: 0 3px 5px;
+      }
+
+      .filter-row {
+        gap: 5px;
+      }
+
+      .search-wrap {
+        flex: 1;
+      }
+
+      .search-wrap svg {
+        width: 11px;
+        height: 11px;
+        left: 6px;
+      }
+
+      .search-input {
+        height: 30px;
+        padding: 0 6px 0 24px;
+        font-size: 10px;
+      }
+
+      .filter-select {
+        height: 30px;
+        padding: 0 6px;
+        font-size: 10px;
+        min-width: 80px;
+        flex: 1;
+      }
+
+      .mobile-list {
+        margin: 0;
+      }
+
+      /* Mobile card styles */
+      .m-card__summary {
+        padding: 4px 3px !important;
+        gap: 4px !important;
+      }
+
+      .m-card__name {
+        font-size: 10px !important;
+      }
+
+      .m-card__chevron {
+        width: 10px !important;
+        height: 10px !important;
+      }
+
+      .m-card__details-inner {
+        padding: 3px 3px 5px !important;
+        gap: 2px !important;
+        background: transparent !important;
+        border-top: 1px solid #f3f4f6 !important;
+      }
+
+      .m-card__row {
+        padding: 1px 0 !important;
+      }
+
+      .m-card__row .m-label {
+        font-size: 8px !important;
+      }
+
+      .m-card__row .m-value {
+        font-size: 9px !important;
+      }
+
+      .m-card__actions {
+        gap: 4px !important;
+        margin-top: 2px !important;
+      }
+
+      .m-action-btn {
+        height: 22px !important;
+        padding: 0 7px !important;
+        font-size: 8px !important;
+      }
+
+      .status-badge {
+        font-size: 7px !important;
+        padding: 1px 4px !important;
+      }
+    }
+
+    .m-card {
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .m-card:first-child { border-top: 1px solid var(--color-border); }
+
+    .m-card__summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      cursor: pointer;
+      user-select: none;
+      gap: 8px;
+    }
+
+    .m-card__name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .m-card__chevron {
+      width: 14px;
+      height: 14px;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+      transition: transform 0.18s ease;
+    }
+
+    .m-card.is-open .m-card__chevron {
+      transform: rotate(180deg);
+    }
+
+    .m-card__details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.22s ease;
+    }
+
+    .m-card.is-open .m-card__details {
+      max-height: 320px;
+    }
+
+    .m-card__details-inner {
+      padding: 8px 12px 10px;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-row-alt);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .m-card__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .m-card__row .m-label {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+
+    .m-card__row .m-value {
+      font-size: 12px;
+      color: var(--color-text);
+      text-align: right;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .m-card__actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .m-action-btn {
+      height: 28px;
+      padding: 0 12px;
+      border-radius: var(--radius-control);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .m-action-btn:hover { background: var(--color-hover-bg); color: var(--color-text); }
+    .m-action-btn--delete:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+
+    .mobile-empty {
+      padding: 32px 12px;
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 13px;
+    }
+
+    /* ── Mobile inline edit form (replaces modal on mobile) ── */
+    @media screen and (max-width: 767px) {
+      .edit-modal { display: none !important; }
+
+      .m-edit-form {
+        padding: 6px 10px 8px;
+        border-top: 1px solid var(--color-border);
+        background: var(--color-surface);
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .m-edit-form input,
+      .m-edit-form select {
+        width: 100%; height: 32px; padding: 0 8px;
+        font-family: var(--font-sans); font-size: 12px; color: var(--color-text);
+        background: var(--color-surface); border: 1px solid var(--color-border);
+        border-radius: 6px; outline: none; appearance: none;
+        box-sizing: border-box;
+      }
+
+      .m-edit-form input:focus,
+      .m-edit-form select:focus { border-color: var(--color-primary); }
+
+      .m-edit-form__error {
+        font-size: 10px; color: #dc2626; min-height: 12px;
+        opacity: 0; transition: opacity 0.2s ease;
+      }
+
+      .m-edit-form__btns { display: flex; gap: 6px; }
+
+      .m-edit-form__save {
+        flex: 1; height: 30px; background: var(--color-primary); color: #fff;
+        border: none; border-radius: 6px;
+        font-family: var(--font-sans); font-size: 12px; font-weight: 500; cursor: pointer;
+      }
+      .m-edit-form__save:disabled { opacity: 0.65; }
+
+      .m-edit-form__cancel {
+        height: 30px; padding: 0 10px; background: none;
+        color: var(--color-text-muted); border: 1px solid var(--color-border);
+        border-radius: 6px; font-family: var(--font-sans);
+        font-size: 12px; cursor: pointer;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar-overlay"></div>
+    <div id="sidebar-container"></div>
+    <div class="app-main">
+      <div class="page">
+
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.75"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+            <input class="search-input" id="search-input" type="search" placeholder="Search by name..." autocomplete="off" />
+          </div>
+          <div class="filter-row">
+            <select class="filter-select" id="ministry-filter">
+              <option value="">All Ministries</option>
+              <option value="Multimedia">Multimedia</option>
+              <option value="Praise and Worship">Praise and Worship</option>
+              <option value="Medical">Medical</option>
+              <option value="Children">Children</option>
+              <option value="Young Professional">Young Professional</option>
+              <option value="Pastor">Pastor</option>
+              <option value="Youth Alive">Youth Alive</option>
+            </select>
+            <select class="filter-select" id="status-filter">
+              <option value="">All Status</option>
+              <option value="visitor">Visitor</option>
+              <option value="active">Active</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table class="members-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Ministry</th>
+                <th>QR Code</th>
+                <th>Registered</th>
+                <th>Attended</th>
+                <th class="col-actions" id="th-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="members-tbody">
+              <tr class="empty-row"><td colspan="6">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mobile-list" id="mobile-list"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="edit-modal" id="edit-modal" hidden>
+    <div class="edit-modal__backdrop" id="edit-backdrop"></div>
+    <div class="edit-modal__box">
+      <div class="edit-modal__header">
+        <p class="edit-modal__title">Edit Member</p>
+        <button type="button" class="edit-modal__close" id="edit-close">✕</button>
+      </div>
+      <div class="edit-modal__body">
+        <input type="hidden" id="edit-id" />
+        <div class="edit-field">
+          <label for="edit-first-name">First Name</label>
+          <input id="edit-first-name" type="text" autocomplete="given-name" />
+        </div>
+        <div class="edit-field">
+          <label for="edit-last-name">Last Name</label>
+          <input id="edit-last-name" type="text" autocomplete="family-name" />
+        </div>
+        <div class="edit-field">
+          <label for="edit-ministry">Ministry</label>
+          <select id="edit-ministry">
+            <option value="Multimedia">Multimedia</option>
+            <option value="Praise and Worship">Praise and Worship</option>
+            <option value="Medical">Medical</option>
+            <option value="Children">Children</option>
+            <option value="Young Professional">Young Professional</option>
+            <option value="Pastor">Pastor</option>
+            <option value="Youth Alive">Youth Alive</option>
+          </select>
+        </div>
+        <div class="edit-field">
+          <label for="edit-status">Status</label>
+          <select id="edit-status">
+            <option value="visitor">Visitor</option>
+            <option value="active">Active</option>
+          </select>
+        </div>
+        <div class="edit-modal__error" id="edit-error"></div>      </div>
+      <div class="edit-modal__footer">
+        <button type="button" class="btn-cancel-edit" id="edit-cancel">Cancel</button>
+        <button type="button" class="btn-save" id="edit-save">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/loader.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app-init.js"></script>
+  <script>
+    // Initialize app before running page code
+    (async function() {
+      try {
+        await AppInit.init();
+        // App is ready, run page initialization
+        initMembers();
+      } catch (err) {
+        console.error('[MEMBERS] Initialization failed:', err);
+        // Auth module will handle redirect
+      }
+    })();
+
+    function initMembers() {
+      console.log('[MEMBERS] Starting page initialization...');
+
+    const isWorker = localStorage.getItem('woh_role') === 'worker';
+    const NAME_REGEX = /^[\p{L}][\p{L}\s'-]*$/u;
+    let debounceTimer = null;
+
+    if (isWorker) {
+      const thActions = document.getElementById('th-actions');
+      if (thActions) thActions.style.display = 'none';
+    }
+
+    function getHeaders() {
+      return Auth.getHeaders();
+    }
+
+    function handle401(res) {
+      return Auth.handle401(res);
+    }
+
+    function formatDate(val) {
+      if (!val) return '—';
+      const d = new Date(val);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function showToast(message, type) {
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = `<span class="toast__icon">${type === 'success' ? '✓' : '✕'}</span><span>${message}</span><span class="toast__progress"></span>`;
+      document.body.appendChild(t);
+      setTimeout(() => { t.classList.add('is-hiding'); setTimeout(() => t.remove(), 250); }, 3000);
+    }
+
+    const MINISTRIES = ['Multimedia','Praise and Worship','Medical','Children','Young Professional','Pastor','Youth Alive'];
+
+    async function loadMembers() {
+      const search = document.getElementById('search-input').value.trim();
+      const ministry = document.getElementById('ministry-filter').value;
+      const statusFilter = document.getElementById('status-filter').value;
+      const tbody = document.getElementById('members-tbody');
+      const mobileList = document.getElementById('mobile-list');
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Loading...</td></tr>';
+      mobileList.innerHTML = '<div class="mobile-empty">Loading...</div>';
+      try {
+        const params = new URLSearchParams();
+        if (search) params.set('search', search);
+        if (ministry) params.set('ministry', ministry);
+        if (statusFilter) params.set('status', statusFilter);
+        const res = await fetch(`/api/members?${params}`, { headers: getHeaders() });
+        if (handle401(res)) return;
+        const data = await res.json();
+        tbody.innerHTML = '';
+        mobileList.innerHTML = '';
+        if (!res.ok || !Array.isArray(data.members) || data.members.length === 0) {
+          tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No members found</td></tr>';
+          mobileList.innerHTML = '<div class="mobile-empty">No members found</div>';
+          return;
+        }
+
+        data.members.forEach(m => {
+          const statusBadge = m.status === 'active'
+            ? '<span class="status-badge status-badge--active">Active</span>'
+            : '<span class="status-badge status-badge--visitor">Visitor</span>';
+
+          // ── Desktop table row ──
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${m.first_name} ${m.last_name}</strong></td>
+            <td>${statusBadge}</td>
+            <td><span class="ministry-badge">${m.ministry}</span></td>
+            <td><span class="qr-code-text">${m.qr_code}</span></td>
+            <td class="col-muted">${formatDate(m.registered_at)}</td>
+            <td class="col-muted">${m.attendance_count ?? 0}</td>
+            ${!isWorker ? `<td class="col-actions">
+              <div class="action-btns">
+                <button class="action-btn" title="Edit" data-action="edit"
+                  data-id="${m.id}" data-first="${m.first_name}" data-last="${m.last_name}"
+                  data-ministry="${m.ministry}" data-status="${m.status}">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+                </button>
+                <button class="action-btn action-btn--delete" title="Delete" data-action="delete" data-id="${m.id}" data-name="${m.first_name} ${m.last_name}">
+                  <svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+            </td>` : ''}`;
+          tbody.appendChild(tr);
+
+          // ── Mobile accordion card ──
+          const card = document.createElement('div');
+          card.className = 'm-card';
+          card.innerHTML = `
+            <div class="m-card__summary">
+              <span class="m-card__name">${m.first_name} ${m.last_name}</span>
+              ${statusBadge}
+            </div>
+            <div class="m-card__details">
+              <div class="m-card__details-inner">
+                <div class="m-card__row"><span class="m-label">Ministry</span><span class="m-value">${m.ministry}</span></div>
+                <div class="m-card__row"><span class="m-label">QR Code</span><span class="m-value" style="font-family:monospace;font-size:11px">${m.qr_code}</span></div>
+                <div class="m-card__row"><span class="m-label">Attended</span><span class="m-value">${m.attendance_count ?? 0} times</span></div>
+                <div class="m-card__row"><span class="m-label">Joined</span><span class="m-value">${formatDate(m.registered_at)}</span></div>
+                <div class="m-card__actions">
+                  ${!isWorker ? `<button class="m-action-btn" data-action="edit"
+                    data-id="${m.id}" data-first="${m.first_name}" data-last="${m.last_name}"
+                    data-ministry="${m.ministry}" data-status="${m.status}">Edit</button>` : ''}
+                  ${!isWorker ? `<button class="m-action-btn m-action-btn--delete" data-action="delete"
+                    data-id="${m.id}" data-name="${m.first_name} ${m.last_name}">Delete</button>` : ''}
+                </div>
+              </div>
+            </div>`;
+
+          card.querySelector('.m-card__summary').addEventListener('click', () => {
+            const isOpen = card.classList.contains('is-open');
+            document.querySelectorAll('.m-card.is-open').forEach(c => c.classList.remove('is-open'));
+            if (!isOpen) card.classList.add('is-open');
+          });
+
+          card.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', e => {
+              e.stopPropagation();
+              if (btn.dataset.action === 'edit') openEditModal(btn.dataset);
+              if (btn.dataset.action === 'delete') confirmDelete(btn.dataset.id, btn.dataset.name);
+            });
+          });
+
+          mobileList.appendChild(card);
+        });
+      } catch {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Could not load members</td></tr>';
+        mobileList.innerHTML = '<div class="mobile-empty">Could not load members</div>';
+      }
+    }
+
+    // ── Search + filter ──
+    document.getElementById('search-input').addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(loadMembers, 300);
+    });
+    document.getElementById('ministry-filter').addEventListener('change', () => {
+      loadMembers();
+      const val = document.getElementById('ministry-filter').value;
+      document.querySelectorAll('.min-card').forEach(c => {
+        c.classList.toggle('is-active', c.title === val);
+      });
+    });
+    document.getElementById('status-filter').addEventListener('change', loadMembers);
+
+    // ── Table action delegation ──
+    document.getElementById('members-tbody').addEventListener('click', e => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      if (btn.dataset.action === 'edit') openEditModal(btn.dataset);
+      if (btn.dataset.action === 'delete') confirmDelete(btn.dataset.id, btn.dataset.name);
+    });
+
+    // ── Edit modal ──
+    function openEditModal({ id, first, last, ministry, status }) {
+      // On mobile: render inline form inside the card
+      if (window.innerWidth < 768) {
+        // Close any other open inline forms
+        document.querySelectorAll('.m-edit-form').forEach(f => f.remove());
+        document.querySelectorAll('.m-card.is-open').forEach(c => c.classList.remove('is-open'));
+
+        const card = document.querySelector(`.m-action-btn[data-id="${id}"]`)?.closest('.m-card');
+        if (!card) return;
+
+        card.classList.add('is-open');
+
+        const form = document.createElement('div');
+        form.className = 'm-edit-form';
+        form.innerHTML = `
+          <input type="text" id="m-edit-first" placeholder="First Name" value="${first}" autocomplete="given-name" />
+          <input type="text" id="m-edit-last" placeholder="Last Name" value="${last}" autocomplete="family-name" />
+          <select id="m-edit-ministry">
+            ${['Multimedia','Praise and Worship','Medical','Children','Young Professional','Pastor','Youth Alive']
+              .map(o => `<option value="${o}"${o === ministry ? ' selected' : ''}>${o}</option>`).join('')}
+          </select>
+          <select id="m-edit-status">
+            <option value="visitor"${status === 'visitor' ? ' selected' : ''}>Visitor</option>
+            <option value="active"${status === 'active' ? ' selected' : ''}>Active</option>
+          </select>
+          <div class="m-edit-form__error" id="m-edit-error"></div>
+          <div class="m-edit-form__btns">
+            <button class="m-edit-form__cancel" id="m-edit-cancel">Cancel</button>
+            <button class="m-edit-form__save" id="m-edit-save">Save</button>
+          </div>`;
+
+        // Insert after .m-card__details
+        card.appendChild(form);
+        document.getElementById('m-edit-first').focus();
+
+        document.getElementById('m-edit-cancel').addEventListener('click', () => {
+          form.remove();
+          card.classList.remove('is-open');
+        });
+
+        document.getElementById('m-edit-save').addEventListener('click', async () => {
+          const first_name = document.getElementById('m-edit-first').value.trim();
+          const last_name  = document.getElementById('m-edit-last').value.trim();
+          const ministry   = document.getElementById('m-edit-ministry').value;
+          const newStatus  = document.getElementById('m-edit-status').value;
+          const errorEl    = document.getElementById('m-edit-error');
+          const saveBtn    = document.getElementById('m-edit-save');
+
+          if (!first_name || !last_name || !ministry) {
+            errorEl.textContent = 'All fields are required';
+            errorEl.style.opacity = '1';
+            return;
+          }
+          if (!NAME_REGEX.test(first_name) || !NAME_REGEX.test(last_name)) {
+            errorEl.textContent = 'Invalid name';
+            errorEl.style.opacity = '1';
+            return;
+          }
+
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Saving...';
+
+          try {
+            const res = await fetch(`/api/members/${id}`, {
+              method: 'PUT',
+              headers: getHeaders(),
+              body: JSON.stringify({ first_name, last_name, ministry, status: newStatus })
+            });
+            if (handle401(res)) return;
+            const data = await res.json();
+            if (data.status === 'success') {
+              form.remove();
+              showToast('Member updated', 'success');
+              await loadMembers();
+            } else {
+              errorEl.textContent = data.message || 'Update failed';
+              errorEl.style.opacity = '1';
+              saveBtn.disabled = false;
+              saveBtn.textContent = 'Save';
+            }
+          } catch {
+            errorEl.textContent = 'Update failed';
+            errorEl.style.opacity = '1';
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save';
+          }
+        });
+
+        return;
+      }
+
+      // Desktop: use modal
+      document.getElementById('edit-id').value = id;
+      document.getElementById('edit-first-name').value = first;
+      document.getElementById('edit-last-name').value = last;
+      document.getElementById('edit-ministry').value = ministry;
+      document.getElementById('edit-status').value = status;
+      document.getElementById('edit-error').style.opacity = '0';
+      document.getElementById('edit-modal').removeAttribute('hidden');
+      document.getElementById('edit-first-name').focus();
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').setAttribute('hidden', '');
+    }
+
+    document.getElementById('edit-close').addEventListener('click', closeEditModal);
+    document.getElementById('edit-cancel').addEventListener('click', closeEditModal);
+    document.getElementById('edit-backdrop').addEventListener('click', closeEditModal);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !document.getElementById('edit-modal').hasAttribute('hidden')) closeEditModal();
+    });
+
+    document.getElementById('edit-save').addEventListener('click', async () => {
+      const id = document.getElementById('edit-id').value;
+      const first_name = document.getElementById('edit-first-name').value.trim();
+      const last_name = document.getElementById('edit-last-name').value.trim();
+      const ministry = document.getElementById('edit-ministry').value;
+      const status = document.getElementById('edit-status').value;
+      const errorEl = document.getElementById('edit-error');
+
+      if (!first_name || !last_name || !ministry) {
+        errorEl.textContent = 'All fields are required';
+        errorEl.style.opacity = '1';
+        return;
+      }
+      if (!NAME_REGEX.test(first_name) || !NAME_REGEX.test(last_name)) {
+        errorEl.textContent = 'Name contains invalid characters';
+        errorEl.style.opacity = '1';
+        return;
+      }
+
+      const saveBtn = document.getElementById('edit-save');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const res = await fetch(`/api/members/${id}`, {
+          method: 'PUT',
+          headers: getHeaders(),
+          body: JSON.stringify({ first_name, last_name, ministry, status })
+        });
+        if (handle401(res)) return;
+        const data = await res.json();
+        if (data.status === 'success') {
+          closeEditModal();
+          showToast('Member updated', 'success');
+          await loadMembers();
+        } else {
+          errorEl.textContent = data.message || 'Update failed';
+          errorEl.style.opacity = '1';
+        }
+      } catch {
+        errorEl.textContent = 'Update failed';
+        errorEl.style.opacity = '1';
+      }
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Changes';
+    });
+
+    // ── Delete ──
+    async function confirmDelete(id, name) {
+      if (!confirm(`Delete ${name}?\n\nThis cannot be undone. Members with attendance records cannot be deleted.`)) return;
+      try {
+        const res = await fetch(`/api/members/${id}`, { method: 'DELETE', headers: getHeaders() });
+        const data = await res.json();
+        if (data.status === 'success') {
+          showToast(`${name} deleted`, 'success');
+          loadMembers();
+        } else {
+          showToast(data.message || 'Delete failed', 'error');
+        }
+      } catch {
+        showToast('Delete failed', 'error');
+      }
+    }
+
+    loadMembers();
+
+    console.log('[MEMBERS] Page initialization complete');
+  }
+  </script>
+</body>
+</html>

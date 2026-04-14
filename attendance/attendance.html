@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance — Word of Hope Caloocan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/attendance.css" />
+  <link rel="stylesheet" href="/assets/css/sidebar.css" />
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar-overlay"></div>
+    <div id="sidebar-container"></div>
+    <div class="app-main">
+  <div class="page">
+
+    <div class="confirm-modal" id="confirm-modal" hidden>
+      <div class="confirm-modal__backdrop" id="confirm-backdrop"></div>
+      <div class="confirm-modal__box">
+        <div class="confirm-modal__default">
+          <p class="confirm-modal__label">Add to Attendance</p>
+          <p class="confirm-modal__name" id="confirm-name"></p>
+          <p class="confirm-modal__ministry" id="confirm-ministry"></p>
+          <div class="confirm-modal__actions">
+            <button type="button" class="confirm-modal__btn confirm-modal__btn--confirm" id="confirm-yes">Add to Attendance</button>
+            <button type="button" class="confirm-modal__btn confirm-modal__btn--cancel" id="confirm-no">Cancel</button>
+          </div>
+        </div>
+        <div class="confirm-modal__duplicate" id="confirm-duplicate" hidden>
+          <div class="confirm-modal__dup-icon">⚠</div>
+          <p class="confirm-modal__dup-title">Already in Attendance</p>
+          <p class="confirm-modal__dup-name" id="confirm-dup-name"></p>
+          <p class="confirm-modal__dup-msg">This member is already marked present today.</p>
+          <button type="button" class="confirm-modal__btn confirm-modal__btn--cancel" id="confirm-dup-ok">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scanner-modal" id="scanner-modal" hidden>
+      <div class="scanner-modal__backdrop"></div>
+      <div class="scanner-modal__box">
+        <div class="scanner-modal__header">
+          <p class="scanner-modal__title">Scan Member QR Code</p>
+          <button type="button" class="scanner-modal__close" id="scanner-close">✕</button>
+        </div>
+        <div class="scanner-modal__area">
+          <div id="qr-reader"></div>
+          <div class="scanner-modal__frame">
+            <div class="scanner-modal__corner scanner-modal__corner--tl"></div>
+            <div class="scanner-modal__corner scanner-modal__corner--tr"></div>
+            <div class="scanner-modal__corner scanner-modal__corner--bl"></div>
+            <div class="scanner-modal__corner scanner-modal__corner--br"></div>
+            <div class="scanner-modal__scanline"></div>
+          </div>
+          <div class="scanner-modal__flash" id="scanner-flash"></div>
+        </div>
+        <div class="scanner-modal__status">
+          <div class="scanner-modal__pulse"></div>
+          <p class="scanner-modal__status-text">Camera active — looking for QR code</p>
+        </div>
+        <div class="scanner-modal__footer">
+          <p class="scanner-modal__hint">Hold the QR code inside the <span class="scanner-modal__hint-green">green frame</span></p>
+          <button type="button" class="scanner-modal__cancel" onclick="document.getElementById('scanner-close').click()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="main">
+      <button type="button" class="scan-card">
+        <span class="scan-card__left">
+          <span class="scan-card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm12 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM10 10h4v4h-4v-4z" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="scan-card__text">
+            <span class="scan-card__label">Scan QR Code</span>
+            <span class="scan-card__hint">Tap to scan member QR code</span>
+          </span>
+        </span>
+        <span class="scan-card__arrow" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 12h14M13 7l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </button>
+
+      <div id="offline-sync-badge" class="offline-sync-badge" hidden></div>
+
+      <div class="scan-result" id="scan-result">
+        <div class="scan-result__check">✓</div>
+        <div class="scan-result__info">
+          <span id="scan-result__name"></span>
+          <span id="scan-result__ministry"></span>
+        </div>
+        <span id="scan-result__time"></span>
+      </div>
+
+      <div class="search-row">
+        <div class="search-field">
+          <span class="search-field__icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.75" />
+              <path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+            </svg>
+          </span>
+          <input
+            class="search-field__input"
+            type="search"
+            name="member-search"
+            placeholder="Search member by name..."
+            autocomplete="off"
+          />
+        </div>
+        <a class="register-btn" id="register-btn-trigger" href="../registration/registration.html">+ Register Member</a>
+      </div>
+
+      <section class="attendance-section" aria-labelledby="attendance-heading">
+        <h2 id="attendance-heading" class="attendance-section__title">Today's Attendance</h2>
+        <div class="table-card">
+          <table class="attendance-table">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Ministry</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    </div><!-- /.page -->
+    </div><!-- /.app-main -->
+  </div><!-- /.app-shell -->
+  <div class="reg-modal" id="reg-modal" hidden>
+    <div class="reg-modal__backdrop" id="reg-backdrop"></div>
+    <div class="reg-modal__box">
+      <div class="reg-modal__header">
+        <div class="reg-modal__brand">
+          <span class="reg-modal__brand-icon">
+            <img src="../WOHLOGO.png" alt="" width="20" height="20" />
+          </span>
+          <p class="reg-modal__title">Member Registration</p>
+        </div>
+        <button type="button" class="reg-modal__close" id="reg-close">✕</button>
+      </div>
+      <form id="reg-form" autocomplete="on" novalidate>
+        <div class="reg-modal__field">
+          <label for="reg-first-name">First Name</label>
+          <input id="reg-first-name" type="text" autocomplete="given-name" required />
+        </div>
+        <div class="reg-modal__field">
+          <label for="reg-last-name">Last Name</label>
+          <input id="reg-last-name" type="text" autocomplete="family-name" required />
+        </div>
+        <div class="reg-modal__field">
+          <label for="reg-ministry">Ministry</label>
+          <select id="reg-ministry" required>
+            <option value="">Select a ministry</option>
+            <option value="Multimedia">Multimedia</option>
+            <option value="Praise and Worship">Praise and Worship</option>
+            <option value="Medical">Medical</option>
+            <option value="Children">Children</option>
+            <option value="Young Professional">Young Professional</option>
+            <option value="Pastor">Pastor</option>
+            <option value="Youth Alive">Youth Alive</option>
+          </select>
+        </div>
+        <div class="reg-modal__error" id="reg-error"></div>
+        <button type="submit" class="reg-modal__submit" id="reg-submit">Register Member</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/loader.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app-init.js"></script>
+  <script>
+    // Initialize app before running page code
+    (async function() {
+      try {
+        await AppInit.init();
+        // App is ready, load page scripts
+        console.log('[ATTENDANCE] App initialized, loading page scripts...');
+      } catch (err) {
+        console.error('[ATTENDANCE] Initialization failed:', err);
+        // Auth module will handle redirect
+      }
+    })();
+  </script>
+  <script src="../assets/js/offlineQueue.js"></script>
+  <script src="../assets/js/syncManager.js"></script>
+  <script src="../assets/js/attendance.js"></script>
+  <script>
+    (function() {
+      const NAME_REGEX = /^[\p{L}][\p{L}\s'-]*$/u;
+      const MINISTRIES = ['Multimedia','Praise and Worship','Medical','Children','Young Professional','Pastor','Youth Alive'];
+      const modal = document.getElementById('reg-modal');
+      const backdrop = document.getElementById('reg-backdrop');
+      const closeBtn = document.getElementById('reg-close');
+      const trigger = document.getElementById('register-btn-trigger');
+      const form = document.getElementById('reg-form');
+      const firstNameInput = document.getElementById('reg-first-name');
+      const lastNameInput = document.getElementById('reg-last-name');
+      const ministrySelect = document.getElementById('reg-ministry');
+      const submitBtn = document.getElementById('reg-submit');
+      const errorEl = document.getElementById('reg-error');
+
+      function isDesktop() { return window.innerWidth >= 768; }
+
+      function openModal() {
+        form.reset();
+        errorEl.style.opacity = '0';
+        modal.removeAttribute('hidden');
+        firstNameInput.focus();
+      }
+
+      function closeModal() {
+        modal.setAttribute('hidden', '');
+      }
+
+      trigger.addEventListener('click', (e) => {
+        if (isDesktop()) {
+          e.preventDefault();
+          openModal();
+        }
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+      backdrop.addEventListener('click', closeModal);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hasAttribute('hidden')) closeModal();
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const first_name = firstNameInput.value.trim();
+        const last_name = lastNameInput.value.trim();
+        const ministry = ministrySelect.value.trim();
+
+        if (!first_name || !last_name || !ministry) {
+          showRegError('All fields are required');
+          return;
+        }
+        if (!NAME_REGEX.test(first_name) || !NAME_REGEX.test(last_name)) {
+          showRegError('Name contains invalid characters');
+          return;
+        }
+
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Registering...';
+
+        try {
+          const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${Auth.getToken()}`
+            },
+            body: JSON.stringify({ first_name, last_name, ministry })
+          });
+          const data = await res.json();
+          if (data.status === 'success') {
+            closeModal();
+            sessionStorage.setItem('registeredMember', JSON.stringify(data.member));
+            window.open('/registration/qr-generate.html', '_blank');
+            if (typeof showMessage === 'function') {
+              showMessage(`${data.member.first_name} ${data.member.last_name} registered`, 'success');
+            }
+            const searchInput = document.querySelector('.search-field__input');
+            if (searchInput) {
+              searchInput.value = first_name;
+              searchInput.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+            }
+          } else {
+            showRegError(data.message || 'Registration failed');
+          }
+        } catch {
+          showRegError('Registration failed');
+        }
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      });
+
+      function showRegError(msg) {
+        errorEl.textContent = msg;
+        errorEl.style.opacity = '1';
+        setTimeout(() => { errorEl.style.opacity = '0'; }, 4000);
+      }
+    })();
+  </script>
+</body>
+</html>

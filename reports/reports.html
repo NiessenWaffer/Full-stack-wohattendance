@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports — Word of Hope Caloocan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/sidebar.css" />
+  <style>
+    :root {
+      --color-primary: #10b981;
+      --color-page-bg: #f9fafb;
+      --color-surface: #ffffff;
+      --color-text: #1f2937;
+      --color-text-muted: #6b7280;
+      --color-border: #e5e7eb;
+      --color-row-hover: #f9fafb;
+      --color-success: #059669;
+      --color-warning: #d97706;
+      --color-danger: #dc2626;
+      --radius-card: 12px;
+      --radius-control: 8px;
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.1);
+      --font-sans: "Inter", sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; min-height: 100%; }
+    body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-page-bg); -webkit-font-smoothing: antialiased; }
+
+    .reports-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .reports-header {
+      margin-bottom: 24px;
+    }
+
+    .reports-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0 0 8px;
+    }
+
+    .reports-subtitle {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    /* ── KPI Summary Cards ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      min-height: 120px;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .kpi-card__label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .kpi-card__value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .kpi-card__subtitle {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .kpi-card--primary .kpi-card__value { color: var(--color-primary); }
+    .kpi-card--success .kpi-card__value { color: var(--color-success); }
+    .kpi-card--warning .kpi-card__value { color: var(--color-warning); }
+
+    /* ── Main Content Grid ── */
+    .reports-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    /* ── Sunday Attendance Chart ── */
+    .chart-section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .chart-header {
+      margin-bottom: 20px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0 0 4px;
+    }
+
+    .chart-subtitle {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .chart-container {
+      height: 200px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 0;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      margin: 20px 0;
+    }
+
+    .chart-bar {
+      flex: 1;
+      background: linear-gradient(180deg, var(--color-primary) 0%, #059669 100%);
+      border-radius: 4px 4px 0 0;
+      min-height: 20px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .chart-bar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .chart-bar__value {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .chart-bar__label {
+      text-align: center;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+    }
+
+    /* ── Action Insights Panel ── */
+    .insights-section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .insights-header {
+      margin-bottom: 16px;
+    }
+
+    .insights-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0 0 4px;
+    }
+
+    .insights-subtitle {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .insight-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .insight-item:last-child {
+      border-bottom: none;
+    }
+
+    .insight-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .insight-icon--warning {
+      background: #fef3c7;
+      color: var(--color-warning);
+    }
+
+    .insight-icon--success {
+      background: #d1fae5;
+      color: var(--color-success);
+    }
+
+    .insight-icon--info {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    .insight-content {
+      flex: 1;
+    }
+
+    .insight-text {
+      font-size: 14px;
+      color: var(--color-text);
+      margin: 0 0 2px;
+      line-height: 1.4;
+    }
+
+    .insight-meta {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    /* ── Recent Registrations ── */
+    .registrations-section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 24px;
+    }
+
+    .registrations-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .registrations-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .registrations-count {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    .registration-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .registration-item:last-child {
+      border-bottom: none;
+    }
+
+    .registration-name {
+      font-size: 14px;
+      color: var(--color-text);
+      font-weight: 500;
+    }
+
+    .registration-date {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    /* ── Export Section ── */
+    .export-section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .export-header {
+      margin-bottom: 16px;
+    }
+
+    .export-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0 0 4px;
+    }
+
+    .export-subtitle {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .export-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--color-surface);
+      color: var(--color-text-muted);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .export-btn:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      background: #f0fdf4;
+    }
+
+    .export-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ── Loading States ── */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: var(--color-text-muted);
+      font-size: 13px;
+    }
+
+    .loading::before {
+      content: '';
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--color-border);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Tablet Responsive ── */
+    @media screen and (min-width: 481px) and (max-width: 768px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .kpi-card {
+        min-height: 100px;
+      }
+    }
+
+    /* ── Mobile Responsive ── */
+    @media screen and (max-width: 768px) {
+      .reports-container {
+        padding: 8px;
+      }
+
+      .reports-header {
+        margin-bottom: 12px;
+      }
+
+      .reports-title {
+        font-size: 18px;
+        margin: 0 0 4px;
+      }
+
+      .reports-subtitle {
+        font-size: 12px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .kpi-card {
+        padding: 12px;
+        min-height: 90px;
+      }
+
+      .kpi-card__label {
+        font-size: 10px;
+        margin-bottom: 4px;
+      }
+
+      .kpi-card__value {
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
+
+      .kpi-card__subtitle {
+        font-size: 11px;
+      }
+
+      .reports-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .chart-section,
+      .insights-section,
+      .registrations-section,
+      .export-section {
+        padding: 12px;
+      }
+
+      .chart-header,
+      .insights-header,
+      .registrations-header,
+      .export-header {
+        margin-bottom: 10px;
+      }
+
+      .chart-title,
+      .insights-title,
+      .registrations-title,
+      .export-title {
+        font-size: 14px;
+        margin: 0 0 2px;
+      }
+
+      .chart-subtitle,
+      .insights-subtitle,
+      .export-subtitle {
+        font-size: 11px;
+      }
+
+      .chart-container {
+        height: 140px;
+        padding: 12px 0;
+        margin: 12px 0;
+      }
+
+      .chart-bar__value {
+        font-size: 11px;
+        top: -20px;
+      }
+
+      .chart-bar__label {
+        font-size: 10px;
+        margin-top: 6px;
+      }
+
+      .insight-item {
+        padding: 8px 0;
+      }
+
+      .insight-icon {
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+      }
+
+      .insight-text {
+        font-size: 13px;
+        margin: 0 0 1px;
+      }
+
+      .insight-meta {
+        font-size: 11px;
+      }
+
+      .registrations-count {
+        font-size: 11px;
+      }
+
+      .registration-item {
+        padding: 6px 0;
+      }
+
+      .registration-name {
+        font-size: 13px;
+      }
+
+      .registration-date {
+        font-size: 11px;
+      }
+
+      .export-buttons {
+        gap: 8px;
+      }
+
+      .export-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        height: 36px;
+      }
+
+      .export-btn svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .registrations-section {
+        margin-bottom: 12px;
+      }
+
+      .loading {
+        padding: 12px;
+        font-size: 12px;
+      }
+
+      .loading::before {
+        width: 12px;
+        height: 12px;
+        margin-right: 4px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .reports-container {
+        padding: 6px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+
+      .kpi-card {
+        padding: 10px;
+        min-height: 80px;
+      }
+
+      .kpi-card__value {
+        font-size: 16px;
+      }
+
+      .reports-grid {
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .chart-section,
+      .insights-section,
+      .registrations-section,
+      .export-section {
+        padding: 10px;
+      }
+
+      .chart-container {
+        height: 120px;
+        padding: 10px 0;
+        margin: 10px 0;
+      }
+
+      .export-buttons {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .export-btn {
+        justify-content: center;
+        height: 34px;
+        padding: 6px 10px;
+      }
+
+      .registrations-section {
+        margin-bottom: 10px;
+      }
+
+      .loading {
+        padding: 10px;
+        font-size: 11px;
+      }
+
+      .loading::before {
+        width: 10px;
+        height: 10px;
+        margin-right: 3px;
+      }
+    }
+
+    @media screen and (max-width: 360px) {
+      .kpi-card {
+        padding: 8px;
+        min-height: 75px;
+      }
+
+      .kpi-card__label {
+        font-size: 9px;
+        margin-bottom: 3px;
+      }
+
+      .kpi-card__value {
+        font-size: 15px;
+        margin-bottom: 1px;
+      }
+
+      .kpi-card__subtitle {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar-overlay"></div>
+    <div id="sidebar-container"></div>
+    <div class="app-main">
+      <div class="reports-container">
+        
+        <!-- Header -->
+        <div class="reports-header">
+          <h1 class="reports-title">Reports Dashboard</h1>
+          <p class="reports-subtitle">Church attendance insights and member overview</p>
+        </div>
+
+        <!-- KPI Summary Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-card--primary">
+            <div class="kpi-card__label">Today's Attendance</div>
+            <div class="kpi-card__value" id="kpi-today">—</div>
+            <div class="kpi-card__subtitle">people attended today</div>
+          </div>
+          <div class="kpi-card kpi-card--success">
+            <div class="kpi-card__label">This Week</div>
+            <div class="kpi-card__value" id="kpi-week">—</div>
+            <div class="kpi-card__subtitle">Sunday attendance</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card__label">Active Members</div>
+            <div class="kpi-card__value" id="kpi-members">—</div>
+            <div class="kpi-card__subtitle">total registered</div>
+          </div>
+          <div class="kpi-card kpi-card--warning">
+            <div class="kpi-card__label">Attendance Rate</div>
+            <div class="kpi-card__value" id="kpi-rate">—</div>
+            <div class="kpi-card__subtitle">of members attended</div>
+          </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="reports-grid">
+          <!-- Sunday Attendance Chart -->
+          <div class="chart-section">
+            <div class="chart-header">
+              <h2 class="chart-title">Sunday Attendance Trend</h2>
+              <p class="chart-subtitle">Last 4 Sundays</p>
+            </div>
+            <div class="chart-container" id="chart-container">
+              <div class="loading">Loading chart data...</div>
+            </div>
+          </div>
+
+          <!-- Action Insights Panel -->
+          <div class="insights-section">
+            <div class="insights-header">
+              <h2 class="insights-title">Action Insights</h2>
+              <p class="insights-subtitle">Items needing attention</p>
+            </div>
+            <div id="insights-list">
+              <div class="loading">Loading insights...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Registrations -->
+        <div class="registrations-section">
+          <div class="registrations-header">
+            <h2 class="registrations-title">Recent Registrations</h2>
+            <span class="registrations-count" id="registrations-count">—</span>
+          </div>
+          <div id="registrations-list">
+            <div class="loading">Loading recent members...</div>
+          </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+          <div class="export-header">
+            <h2 class="export-title">Quick Exports</h2>
+            <p class="export-subtitle">Download reports for external use</p>
+          </div>
+          <div class="export-buttons">
+            <button class="export-btn" id="export-attendance">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Attendance Summary
+            </button>
+            <button class="export-btn" id="export-members">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Members List
+            </button>
+            <button class="export-btn" id="export-inactive">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Inactive Members
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/loader.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app-init.js"></script>
+  <script>
+    // Initialize app before running page code
+    (async function() {
+      try {
+        await AppInit.init();
+        initReportsDashboard();
+      } catch (err) {
+        console.error('[REPORTS] Initialization failed:', err);
+      }
+    })();
+
+    function initReportsDashboard() {
+      console.log('[REPORTS] Starting dashboard initialization...');
+
+      function getHeaders() {
+        return Auth.getHeaders();
+      }
+
+      function handle401(res) {
+        return Auth.handle401(res);
+      }
+
+      function formatDate(val) {
+        if (!val) return '—';
+        const d = new Date(val);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+
+      function formatDateShort(val) {
+        if (!val) return '—';
+        const d = new Date(val);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      }
+
+      // CSV download helper
+      function downloadCSV(filename, headers, rows) {
+        const escape = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+        const lines = [headers.map(escape).join(',')];
+        rows.forEach(r => lines.push(r.map(escape).join(',')));
+        const blob = new Blob([lines.join('\r\n')], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+
+      // Load dashboard data
+      async function loadDashboard() {
+        try {
+          // Load all data in parallel
+          const [kpiData, chartData, insightsData, registrationsData] = await Promise.all([
+            loadKPIData(),
+            loadChartData(),
+            loadInsightsData(),
+            loadRegistrationsData()
+          ]);
+
+          updateKPICards(kpiData);
+          updateChart(chartData);
+          updateInsights(insightsData);
+          updateRegistrations(registrationsData);
+
+        } catch (err) {
+          console.error('[REPORTS] Failed to load dashboard:', err);
+        }
+      }
+
+      // Load KPI data
+      async function loadKPIData() {
+        const today = new Date().toISOString().slice(0, 10);
+        
+        // Get today's attendance
+        const todayRes = await fetch(`/api/reports/attendance-by-date?from=${today}&to=${today}`, { headers: getHeaders() });
+        const todayData = await todayRes.json();
+        const todayCount = Array.isArray(todayData.records) ? todayData.records.length : 0;
+
+        // Get this week's Sunday attendance (find last Sunday)
+        const lastSunday = getLastSunday();
+        const sundayRes = await fetch(`/api/reports/attendance-by-date?from=${lastSunday}&to=${lastSunday}`, { headers: getHeaders() });
+        const sundayData = await sundayRes.json();
+        const sundayCount = Array.isArray(sundayData.records) ? sundayData.records.length : 0;
+
+        // Get total members
+        const membersRes = await fetch('/api/reports/member-summary', { headers: getHeaders() });
+        const membersData = await membersRes.json();
+        const totalMembers = Array.isArray(membersData.members) ? membersData.members.length : 0;
+
+        // Calculate attendance rate (Sunday attendance / total members)
+        const attendanceRate = totalMembers > 0 ? Math.round((sundayCount / totalMembers) * 100) : 0;
+
+        return {
+          today: todayCount,
+          thisWeek: sundayCount,
+          totalMembers,
+          attendanceRate
+        };
+      }
+
+      // Load chart data (last 4 Sundays)
+      async function loadChartData() {
+        const sundays = getLast4Sundays();
+        const chartData = [];
+
+        for (const sunday of sundays) {
+          try {
+            const res = await fetch(`/api/reports/attendance-by-date?from=${sunday.date}&to=${sunday.date}`, { headers: getHeaders() });
+            const data = await res.json();
+            const count = Array.isArray(data.records) ? data.records.length : 0;
+            chartData.push({
+              label: sunday.label,
+              value: count,
+              date: sunday.date
+            });
+          } catch {
+            chartData.push({
+              label: sunday.label,
+              value: 0,
+              date: sunday.date
+            });
+          }
+        }
+
+        return chartData;
+      }
+
+      // Load insights data
+      async function loadInsightsData() {
+        const insights = [];
+
+        try {
+          // Get inactive members (30+ days)
+          const inactiveRes = await fetch('/api/reports/inactive?days=30', { headers: getHeaders() });
+          const inactiveData = await inactiveRes.json();
+          const inactiveCount = Array.isArray(inactiveData.members) ? inactiveData.members.length : 0;
+
+          if (inactiveCount > 0) {
+            insights.push({
+              type: 'warning',
+              text: `${inactiveCount} members haven't attended in 30+ days`,
+              meta: 'Consider pastoral follow-up'
+            });
+          }
+
+          // Get recent registrations (last 7 days)
+          const membersRes = await fetch('/api/reports/member-summary', { headers: getHeaders() });
+          const membersData = await membersRes.json();
+          const recentMembers = Array.isArray(membersData.members) 
+            ? membersData.members.filter(m => {
+                const regDate = new Date(m.registered_at);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return regDate >= weekAgo;
+              })
+            : [];
+
+          if (recentMembers.length > 0) {
+            insights.push({
+              type: 'success',
+              text: `${recentMembers.length} new members registered this week`,
+              meta: 'Welcome and integrate new members'
+            });
+          }
+
+          // Check attendance trend
+          const chartData = await loadChartData();
+          if (chartData.length >= 2) {
+            const latest = chartData[chartData.length - 1].value;
+            const previous = chartData[chartData.length - 2].value;
+            const change = latest - previous;
+            
+            if (change > 0) {
+              insights.push({
+                type: 'success',
+                text: `Attendance increased by ${change} from last Sunday`,
+                meta: 'Positive growth trend'
+              });
+            } else if (change < -5) {
+              insights.push({
+                type: 'warning',
+                text: `Attendance dropped by ${Math.abs(change)} from last Sunday`,
+                meta: 'Monitor attendance patterns'
+              });
+            }
+          }
+
+          // If no insights, show positive message
+          if (insights.length === 0) {
+            insights.push({
+              type: 'info',
+              text: 'All attendance metrics look healthy',
+              meta: 'Keep up the great work!'
+            });
+          }
+
+        } catch (err) {
+          console.error('Failed to load insights:', err);
+          insights.push({
+            type: 'info',
+            text: 'Unable to load insights at this time',
+            meta: 'Please try refreshing the page'
+          });
+        }
+
+        return insights;
+      }
+
+      // Load recent registrations
+      async function loadRegistrationsData() {
+        try {
+          const res = await fetch('/api/reports/member-summary', { headers: getHeaders() });
+          const data = await res.json();
+          const members = Array.isArray(data.members) ? data.members : [];
+          
+          // Sort by registration date and take last 8
+          const recent = members
+            .sort((a, b) => new Date(b.registered_at) - new Date(a.registered_at))
+            .slice(0, 8);
+
+          return recent;
+        } catch {
+          return [];
+        }
+      }
+
+      // Update KPI cards
+      function updateKPICards(data) {
+        document.getElementById('kpi-today').textContent = data.today;
+        document.getElementById('kpi-week').textContent = data.thisWeek;
+        document.getElementById('kpi-members').textContent = data.totalMembers;
+        document.getElementById('kpi-rate').textContent = `${data.attendanceRate}%`;
+      }
+
+      // Update chart
+      function updateChart(data) {
+        const container = document.getElementById('chart-container');
+        container.innerHTML = '';
+
+        if (data.length === 0) {
+          container.innerHTML = '<div class="loading">No chart data available</div>';
+          return;
+        }
+
+        const maxValue = Math.max(...data.map(d => d.value));
+        const minHeight = 20;
+
+        data.forEach(item => {
+          const barContainer = document.createElement('div');
+          barContainer.style.flex = '1';
+          barContainer.style.display = 'flex';
+          barContainer.style.flexDirection = 'column';
+          barContainer.style.alignItems = 'center';
+
+          const height = maxValue > 0 ? Math.max(minHeight, (item.value / maxValue) * 160) : minHeight;
+          
+          barContainer.innerHTML = `
+            <div class="chart-bar" style="height: ${height}px;">
+              <div class="chart-bar__value">${item.value}</div>
+            </div>
+            <div class="chart-bar__label">${item.label}</div>
+          `;
+
+          container.appendChild(barContainer);
+        });
+      }
+
+      // Update insights
+      function updateInsights(insights) {
+        const container = document.getElementById('insights-list');
+        container.innerHTML = '';
+
+        insights.forEach(insight => {
+          const item = document.createElement('div');
+          item.className = 'insight-item';
+          
+          const iconClass = `insight-icon--${insight.type}`;
+          const iconSymbol = insight.type === 'warning' ? '⚠' : insight.type === 'success' ? '✓' : 'ℹ';
+          
+          item.innerHTML = `
+            <div class="insight-icon ${iconClass}">${iconSymbol}</div>
+            <div class="insight-content">
+              <p class="insight-text">${insight.text}</p>
+              <p class="insight-meta">${insight.meta}</p>
+            </div>
+          `;
+
+          container.appendChild(item);
+        });
+      }
+
+      // Update registrations
+      function updateRegistrations(members) {
+        const container = document.getElementById('registrations-list');
+        const countEl = document.getElementById('registrations-count');
+        
+        countEl.textContent = `${members.length} recent`;
+        container.innerHTML = '';
+
+        if (members.length === 0) {
+          container.innerHTML = '<div class="loading">No recent registrations</div>';
+          return;
+        }
+
+        members.forEach(member => {
+          const item = document.createElement('div');
+          item.className = 'registration-item';
+          
+          item.innerHTML = `
+            <div class="registration-name">${member.first_name} ${member.last_name}</div>
+            <div class="registration-date">${formatDateShort(member.registered_at)}</div>
+          `;
+
+          container.appendChild(item);
+        });
+      }
+
+      // Helper functions
+      function getLastSunday() {
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const lastSunday = new Date(today);
+        lastSunday.setDate(today.getDate() - dayOfWeek);
+        return lastSunday.toISOString().slice(0, 10);
+      }
+
+      function getLast4Sundays() {
+        const sundays = [];
+        const today = new Date();
+        
+        for (let i = 0; i < 4; i++) {
+          const sunday = new Date(today);
+          sunday.setDate(today.getDate() - today.getDay() - (i * 7));
+          
+          sundays.unshift({
+            date: sunday.toISOString().slice(0, 10),
+            label: formatDateShort(sunday)
+          });
+        }
+        
+        return sundays;
+      }
+
+      // Export handlers
+      document.getElementById('export-attendance').addEventListener('click', async () => {
+        try {
+          const from = new Date();
+          from.setDate(from.getDate() - 30); // Last 30 days
+          const to = new Date();
+          
+          const res = await fetch(`/api/reports/attendance-by-date?from=${from.toISOString().slice(0, 10)}&to=${to.toISOString().slice(0, 10)}`, { headers: getHeaders() });
+          const data = await res.json();
+          
+          if (Array.isArray(data.records)) {
+            downloadCSV('attendance-summary.csv',
+              ['Name', 'Ministry', 'Date', 'Time'],
+              data.records.map(r => [`${r.first_name} ${r.last_name}`, r.ministry, formatDate(r.attendance_date), r.attendance_time])
+            );
+          }
+        } catch (err) {
+          console.error('Export failed:', err);
+        }
+      });
+
+      document.getElementById('export-members').addEventListener('click', async () => {
+        try {
+          const res = await fetch('/api/reports/member-summary', { headers: getHeaders() });
+          const data = await res.json();
+          
+          if (Array.isArray(data.members)) {
+            downloadCSV('members-list.csv',
+              ['Name', 'Ministry', 'Total Attended', 'Last Attended', 'Registered'],
+              data.members.map(m => [`${m.first_name} ${m.last_name}`, m.ministry, m.total_attended, formatDate(m.last_attended), formatDate(m.registered_at)])
+            );
+          }
+        } catch (err) {
+          console.error('Export failed:', err);
+        }
+      });
+
+      document.getElementById('export-inactive').addEventListener('click', async () => {
+        try {
+          const res = await fetch('/api/reports/inactive?days=30', { headers: getHeaders() });
+          const data = await res.json();
+          
+          if (Array.isArray(data.members)) {
+            downloadCSV('inactive-members.csv',
+              ['Name', 'Ministry', 'Last Attended', 'Total Attended'],
+              data.members.map(m => [`${m.first_name} ${m.last_name}`, m.ministry, m.last_attended ? formatDate(m.last_attended) : 'Never', m.total_attended])
+            );
+          }
+        } catch (err) {
+          console.error('Export failed:', err);
+        }
+      });
+
+      // Load dashboard on init
+      loadDashboard();
+
+      console.log('[REPORTS] Dashboard initialization complete');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — Word of Hope Caloocan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/sidebar.css" />
+  <link rel="stylesheet" href="/assets/css/settings.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar-overlay"></div>
+    <div id="sidebar-container"></div>
+    <div class="app-main settings-main">
+      <div class="settings-grid">
+
+        <div class="settings-card" id="card-church-profile">
+          <h2 class="settings-card__title">Church Profile</h2>
+          <div class="settings-row">
+            <div class="settings-row__label">
+              Church Name
+              <div class="settings-row__desc">Displayed across the system</div>
+            </div>
+            <div class="settings-row__control">
+              <input type="text" id="church-name" value="Word of Hope Caloocan" />
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row__label">
+              Church Address
+              <div class="settings-row__desc">Optional — for printed reports</div>
+            </div>
+            <div class="settings-row__control">
+              <input type="text" id="church-address" placeholder="Enter address" />
+              <div class="settings-row__actions">
+                <button class="settings-btn" id="btn-save-profile">Save Changes</button>
+                <div class="settings-msg settings-msg--success" id="msg-profile" style="opacity:0;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card" id="card-account-security">
+          <h2 class="settings-card__title">Account Security</h2>
+
+          <div class="settings-row">
+            <div class="settings-row__label">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="width:24px;height:24px;border-radius:6px;background:#eff6ff;color:#3b82f6;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                Email Address
+              </div>
+              <div class="settings-row__desc" style="margin-top:4px;">Update your sign-in email</div>
+            </div>
+            <div class="settings-row__control">
+              <input type="password" id="current-password-email" placeholder="Current password" />
+              <input type="email" id="new-email" placeholder="New email address" />
+              <div class="settings-row__actions">
+                <button class="settings-btn" id="btn-update-email">Update Email</button>
+                <div class="settings-msg settings-msg--success" id="msg-email" style="opacity:0;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row__label">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="width:24px;height:24px;border-radius:6px;background:#fefce8;color:#d97706;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.75"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
+                </span>
+                Password
+              </div>
+              <div class="settings-row__desc" style="margin-top:4px;">Use a strong unique password</div>
+            </div>
+            <div class="settings-row__control">
+              <input type="password" id="current-password" placeholder="Current password" />
+              <input type="password" id="new-password" placeholder="New password (min 8 chars)" />
+              <input type="password" id="confirm-password" placeholder="Confirm new password" />
+              <div class="settings-row__actions">
+                <button class="settings-btn" id="btn-update-account">Update Password</button>
+                <div class="settings-msg settings-msg--error" id="msg-account" style="opacity:0;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card" id="card-workers" style="display:none;">
+          <h2 class="settings-card__title">Worker Accounts</h2>
+          <div class="settings-row">
+            <div class="settings-row__label">
+              Add Worker
+              <div class="settings-row__desc">Create a new staff login account</div>
+            </div>
+            <div class="settings-row__control">
+              <input type="email" id="w-email" placeholder="Worker email address" />
+              <input type="password" id="w-password" placeholder="Password" />
+              <div class="settings-row__actions">
+                <button class="settings-btn" id="btn-add-worker">Add Worker</button>
+                <div class="settings-msg settings-msg--error" id="msg-worker" style="opacity:0;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row__label">
+              Current Workers
+              <div class="settings-row__desc">Active staff accounts</div>
+            </div>
+            <div class="settings-row__control">
+              <div id="workers-list"><div class="settings-empty">Loading...</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card" id="card-attendance-rules">
+          <h2 class="settings-card__title">Attendance Rules</h2>
+          <div class="settings-row">
+            <div class="settings-row__label">
+              Inactive Threshold
+              <div class="settings-row__desc">Mark member inactive after N weeks of no attendance</div>
+            </div>
+            <div class="settings-row__control">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <input type="number" id="inactive-threshold" min="1" max="52" value="4" style="width:72px;" />
+                <span style="font-size:13px;color:#6b7280;">weeks</span>
+              </div>
+              <div class="settings-row__actions">
+                <button class="settings-btn" id="btn-save-rules">Save Rules</button>
+                <div class="settings-msg settings-msg--success" id="msg-rules" style="opacity:0;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card" id="card-system-info">
+          <h2 class="settings-card__title">System Info</h2>
+          <div class="settings-info-row">
+            <span class="settings-info-row__label">Version</span>
+            <span class="settings-info-row__value">1.1</span>
+          </div>
+          <div class="settings-info-row">
+            <span class="settings-info-row__label">Server</span>
+            <span class="settings-info-row__value">localhost:3000</span>
+          </div>
+          <div class="settings-info-row">
+            <span class="settings-info-row__label">Database</span>
+            <span class="settings-info-row__value">woh_attendance</span>
+          </div>
+          <div class="settings-info-row">
+            <span class="settings-info-row__label">Total Members</span>
+            <span class="settings-info-row__value" id="stat-members">—</span>
+          </div>
+          <div class="settings-info-row">
+            <span class="settings-info-row__label">Total Attendance</span>
+            <span class="settings-info-row__value" id="stat-attendance">—</span>
+          </div>
+        </div>
+
+        <div class="settings-card" id="card-session">
+          <h2 class="settings-card__title">Session</h2>
+          <div class="settings-session-row">
+            <div class="settings-avatar" id="session-avatar">A</div>
+            <div class="settings-session-info">
+              <div class="settings-session-email" id="session-email">—</div>
+              <div class="settings-session-role" id="session-role">—</div>
+            </div>
+          </div>
+          <button class="settings-btn--danger" id="btn-logout">Log Out</button>
+          <button class="settings-btn--neutral" id="btn-switch">Switch Account</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/loader.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app-init.js"></script>
+  <script>
+    // Initialize app before running page code
+    (async function() {
+      try {
+        await AppInit.init();
+        // App is ready, run page initialization
+        initSettings();
+      } catch (err) {
+        console.error('[SETTINGS] Initialization failed:', err);
+        // Auth module will handle redirect
+      }
+    })();
+
+    function initSettings() {
+      console.log('[SETTINGS] Starting page initialization...');
+
+      const role  = localStorage.getItem('woh_role') || '';
+      const email = localStorage.getItem('woh_admin') ? (JSON.parse(localStorage.getItem('woh_admin')).email || '') : '';
+      const name  = localStorage.getItem('woh_name') || 'Admin';
+
+      function getHeaders() {
+        return Auth.getHeaders();
+      }
+
+      function showMsg(id, text, type) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = text;
+        el.className = 'settings-msg settings-msg--' + type;
+        el.style.opacity = '1';
+        setTimeout(() => { el.style.opacity = '0'; }, 3000);
+      }
+
+      document.getElementById('session-email').textContent = email || name;
+      document.getElementById('session-role').textContent  = role || 'admin';
+      document.getElementById('session-avatar').textContent = (email || name).charAt(0).toUpperCase();
+
+      if (role === 'admin') {
+        document.getElementById('card-workers').style.display = 'block';
+        loadWorkers();
+      }
+
+      const threshold = localStorage.getItem('woh_inactive_threshold');
+      if (threshold) document.getElementById('inactive-threshold').value = threshold;
+
+      document.getElementById('btn-save-profile').addEventListener('click', function () {
+        showMsg('msg-profile', 'Profile saved', 'success');
+      });
+
+      document.getElementById('btn-update-account').addEventListener('click', function () {
+        const np = document.getElementById('new-password').value;
+        const cp = document.getElementById('confirm-password').value;
+        if (np && np !== cp) {
+          showMsg('msg-account', 'Passwords do not match', 'error');
+          return;
+        }
+        showMsg('msg-account', 'Password updated', 'success');
+      });
+
+      document.getElementById('btn-update-email').addEventListener('click', function () {
+        const em = document.getElementById('new-email').value.trim();
+        const pw = document.getElementById('current-password-email').value;
+        if (!em || !pw) {
+          showMsg('msg-email', 'All fields are required', 'error');
+          return;
+        }
+        showMsg('msg-email', 'Email updated', 'success');
+      });
+
+      document.getElementById('btn-save-rules').addEventListener('click', function () {
+        const val = parseInt(document.getElementById('inactive-threshold').value, 10);
+        if (!val || val < 1 || val > 52) {
+          showMsg('msg-rules', 'Enter a value between 1 and 52', 'error');
+          return;
+        }
+        localStorage.setItem('woh_inactive_threshold', val);
+        showMsg('msg-rules', 'Rules saved', 'success');
+      });
+
+      document.getElementById('btn-logout').addEventListener('click', async function () {
+        try {
+          await fetch('/api/sessions/logout', {
+            method: 'POST',
+            headers: getHeaders()
+          });
+        } catch {}
+        Auth.logout();
+      });
+
+      document.getElementById('btn-switch').addEventListener('click', async function () {
+        try {
+          await fetch('/api/sessions/logout', {
+            method: 'POST',
+            headers: getHeaders()
+          });
+        } catch {}
+        Auth.logout();
+      });
+
+      fetch('/api/stats', { headers: getHeaders() })
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 'success') {
+            document.getElementById('stat-members').textContent    = data.stats.total_members;
+            document.getElementById('stat-attendance').textContent = data.stats.total_attendance;
+          }
+        })
+        .catch(() => {});
+
+      document.getElementById('btn-add-worker').addEventListener('click', addWorker);
+
+      function addWorker() {
+        const em = document.getElementById('w-email').value.trim();
+        const pw = document.getElementById('w-password').value;
+        if (!em || !pw) { showMsg('msg-worker', 'Email and password are required', 'error'); return; }
+        const btn = document.getElementById('btn-add-worker');
+        btn.disabled = true;
+        fetch('/api/workers/create', {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify({ email: em, password: pw, display_name: 'Worker' })
+        })
+          .then(r => r.json())
+          .then(data => {
+            if (data.status === 'success') {
+              document.getElementById('w-email').value = '';
+              document.getElementById('w-password').value = '';
+              loadWorkers();
+            } else {
+              showMsg('msg-worker', data.message || 'Failed', 'error');
+            }
+          })
+          .catch(() => showMsg('msg-worker', 'Failed to add worker', 'error'))
+          .finally(() => { btn.disabled = false; });
+      }
+
+      function loadWorkers() {
+        const list = document.getElementById('workers-list');
+        if (!list) return;
+        list.innerHTML = '<div class="settings-empty">Loading...</div>';
+        fetch('/api/workers', { headers: getHeaders() })
+          .then(r => r.json())
+          .then(data => {
+            if (!Array.isArray(data.workers) || data.workers.length === 0) {
+              list.innerHTML = '<div class="settings-empty">No worker accounts yet</div>';
+              return;
+            }
+            list.innerHTML = '';
+            data.workers.forEach(w => {
+              const row = document.createElement('div');
+              row.className = 'settings-worker-row';
+              row.innerHTML = '<span>' + w.email + '</span>'
+                + '<button class="settings-worker-remove" data-id="' + w.id + '">Remove</button>';
+              row.querySelector('button').addEventListener('click', () => removeWorker(w.id));
+              list.appendChild(row);
+            });
+          })
+          .catch(() => { list.innerHTML = '<div class="settings-empty">Failed to load</div>'; });
+      }
+
+      function removeWorker(id) {
+        if (!confirm('Remove this worker?')) return;
+        fetch('/api/workers/' + id, {
+          method: 'DELETE',
+          headers: getHeaders()
+        })
+          .then(r => r.json())
+          .then(data => { if (data.status === 'success') loadWorkers(); });
+      }
+
+      console.log('[SETTINGS] Page initialization complete');
+    }
+  </script>
+</body>
+</html>

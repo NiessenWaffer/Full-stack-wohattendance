@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member Registration — Word of Hope Caloocan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/registration.css" />
+</head>
+<body>
+  <div class="page">
+    <main class="form-panel">
+      <div class="card" role="region" aria-labelledby="registration-heading">
+        <div class="brand">
+          <span class="brand__icon" aria-hidden="true">
+            <img src="../WOHLOGO.png" alt="" width="32" height="32" />
+          </span>
+          <span class="brand__title">Word of Hope Caloocan</span>
+        </div>
+        <h1 id="registration-heading" class="card__heading">Member Registration</h1>
+        <p class="card__subheading">Fill in the details below</p>
+        <form method="post" autocomplete="on">
+          <div class="field">
+            <label for="first_name">First Name</label>
+            <div class="input-wrap">
+              <input id="first_name" name="first_name" type="text" autocomplete="given-name" required autofocus />
+            </div>
+          </div>
+          <div class="field">
+            <label for="last_name">Last Name</label>
+            <div class="input-wrap">
+              <input id="last_name" name="last_name" type="text" autocomplete="family-name" required />
+            </div>
+          </div>
+          <div class="field">
+            <label for="ministry">Ministry</label>
+            <div class="input-wrap">
+              <select id="ministry" name="ministry" required>
+                <option value="">Select a ministry</option>
+                <option value="Multimedia">Multimedia</option>
+                <option value="Praise and Worship">Praise and Worship</option>
+                <option value="Medical">Medical</option>
+                <option value="Children">Children</option>
+                <option value="Young Professional">Young Professional</option>
+                <option value="Pastor">Pastor</option>
+                <option value="Youth Alive">Youth Alive</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn-submit">Register Member</button>
+          <div class="error-message" aria-live="polite"></div>
+        </form>
+      </div>
+    </main>
+  </div>
+  <script src="../assets/js/registration.js"></script>
+</body>
+</html>

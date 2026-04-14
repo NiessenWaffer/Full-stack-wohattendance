@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events — Word of Hope Caloocan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/sidebar.css" />
+  <style>
+    :root {
+      --color-primary: #10b981;
+      --color-page-bg: #f9fafb;
+      --color-surface: #ffffff;
+      --color-text: #1f2937;
+      --color-text-muted: #6b7280;
+      --color-border: #e5e7eb;
+      --color-row-hover: #f9fafb;
+      --color-badge-bg: #ecfdf5;
+      --radius-sm: 4px;
+      --font-sans: "Inter", sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; min-height: 100%; }
+    body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-page-bg); -webkit-font-smoothing: antialiased; }
+
+    /* ── Compact Layout ── */
+    .events-layout {
+      display: flex;
+      gap: 6px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6px;
+    }
+
+    /* ── Ultra-Compact Sidebar ── */
+    .events-sidebar {
+      width: 180px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .btn-create {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 28px;
+      padding: 0 8px;
+      background: var(--color-primary);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      width: 100%;
+    }
+    .btn-create:hover { background: #059669; }
+    .btn-create svg { width: 11px; height: 11px; }
+
+    /* Ultra-Compact Filter Panel */
+    .filter-panel {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+    }
+
+    .filter-title {
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+      padding: 0 3px;
+    }
+
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 5px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      font-size: 11px;
+      color: var(--color-text);
+    }
+
+    .filter-option:hover {
+      background: var(--color-row-hover);
+    }
+
+    .filter-option.is-active {
+      background: var(--color-badge-bg);
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+
+    .filter-icon {
+      width: 11px;
+      height: 11px;
+      color: currentColor;
+    }
+
+    /* ── Main Content ── */
+    .events-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Ultra-Compact Top Bar */
+    .events-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      gap: 6px;
+      padding: 4px 6px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+    }
+
+    .events-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .search-input {
+      width: 180px;
+      height: 26px;
+      padding: 0 6px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      color: var(--color-text);
+      background: var(--color-surface);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--color-primary);
+    }
+
+    .search-input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    /* ── Modern Event List (Soft Row Cards) ── */
+    .events-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: transparent;
+      padding: 16px;
+    }
+
+    .event-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      min-height: 72px;
+    }
+
+    .event-card:hover {
+      border-color: var(--color-primary);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .event-card.is-today {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border-color: var(--color-primary);
+    }
+
+    .event-card__content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .event-card__header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+
+    .event-card__title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .event-card__meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+
+    .event-card__meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .event-card__meta-icon {
+      width: 14px;
+      height: 14px;
+      opacity: 0.7;
+    }
+
+    .event-card__actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .type-badge--sunday  { background: #ecfdf5; color: #059669; }
+    .type-badge--youth   { background: #eff6ff; color: #2563eb; }
+    .type-badge--prayer  { background: #fdf4ff; color: #9333ea; }
+    .type-badge--outreach{ background: #fff7ed; color: #ea580c; }
+    .type-badge--special { background: #fefce8; color: #ca8a04; }
+
+    .event-card__actions {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 6px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      cursor: pointer;
+      color: var(--color-text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      gap: 6px;
+    }
+    .action-btn svg { width: 14px; height: 14px; }
+    .action-btn:hover { 
+      background: var(--color-primary); 
+      color: white; 
+      border-color: var(--color-primary);
+    }
+    .action-btn--delete:hover { 
+      background: #dc2626; 
+      color: white; 
+      border-color: #dc2626; 
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--color-text-muted);
+    }
+
+    .empty-state__icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      color: var(--color-border);
+    }
+
+    .empty-state__text {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* ── Modal ── */
+    .event-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .event-modal[hidden] { display: none; }
+    .event-modal__backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+    }
+    .event-modal__box {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      animation: modalIn 0.2s ease forwards;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    @keyframes modalIn { to { opacity: 1; transform: translateY(0); } }
+    .event-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .event-modal__title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .event-modal__close {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      border: none;
+      background: var(--color-row-alt);
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+    }
+    .event-modal__close:hover {
+      background: var(--color-border);
+      color: var(--color-text);
+    }
+    .event-modal__body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .event-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .event-field label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+    .event-field input,
+    .event-field select,
+    .event-field textarea {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: var(--color-text);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      outline: none;
+      appearance: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      padding: 0 10px;
+    }
+    .event-field input,
+    .event-field select { height: 36px; }
+    .event-field textarea {
+      height: 70px;
+      padding: 8px 10px;
+      resize: vertical;
+    }
+    .event-field input:focus,
+    .event-field select:focus,
+    .event-field textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+    }
+    .event-modal__error {
+      font-size: 11px;
+      color: #dc2626;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      min-height: 14px;
+    }
+    .event-modal__footer {
+      display: flex;
+      gap: 6px;
+      padding: 0 16px 16px;
+    }
+    .btn-save {
+      flex: 1;
+      height: 36px;
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-control);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-save:hover { background: #059669; }
+    .btn-save:disabled {
+      opacity: 0.65;
+      cursor: default;
+    }
+    .btn-cancel {
+      height: 36px;
+      padding: 0 14px;
+      background: var(--color-row-alt);
+      color: var(--color-text-muted);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-cancel:hover {
+      background: var(--color-border);
+      color: var(--color-text);
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: var(--radius-card);
+      font-size: 12px;
+      font-weight: 500;
+      max-width: 280px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      overflow: hidden;
+      animation: toastIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    .toast.is-hiding { animation: toastOut 0.25s ease forwards; }
+    .toast.success {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .toast.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .toast__icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .toast.success .toast__icon {
+      background: #16a34a;
+      color: #fff;
+    }
+    .toast.error .toast__icon {
+      background: #dc2626;
+      color: #fff;
+    }
+    .toast__progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      border-radius: 0 0 var(--radius-card) var(--radius-card);
+      animation: toastProgress 3s linear forwards;
+    }
+    .toast.success .toast__progress { background: #16a34a; }
+    .toast.error .toast__progress { background: #dc2626; }
+    @keyframes toastIn {
+      from {
+        transform: translateX(calc(100% + 20px));
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes toastOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(calc(100% + 20px));
+        opacity: 0;
+      }
+    }
+    @keyframes toastProgress {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+
+    /* ── Bottom Sheet (Mobile Detail View) ── */
+    .bottom-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .bottom-sheet.is-open {
+      pointer-events: all;
+      opacity: 1;
+    }
+
+    .bottom-sheet__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .bottom-sheet.is-open .bottom-sheet__backdrop {
+      opacity: 1;
+    }
+
+    .bottom-sheet__panel {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      max-height: 80vh;
+      background: var(--color-surface);
+      border-radius: 16px 16px 0 0;
+      box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.15);
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      overflow: hidden;
+    }
+
+    .bottom-sheet.is-open .bottom-sheet__panel {
+      transform: translateY(0);
+    }
+
+    .bottom-sheet__handle {
+      display: flex;
+      justify-content: center;
+      padding: 12px;
+      cursor: grab;
+    }
+
+    .bottom-sheet__handle::before {
+      content: '';
+      width: 36px;
+      height: 4px;
+      background: var(--color-border);
+      border-radius: 2px;
+    }
+
+    .bottom-sheet__header {
+      padding: 0 20px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .bottom-sheet__title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0 0 8px;
+      line-height: 1.3;
+    }
+
+    .bottom-sheet__subtitle {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    .bottom-sheet__body {
+      padding: 20px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .bottom-sheet__section {
+      margin-bottom: 20px;
+    }
+
+    .bottom-sheet__section:last-child {
+      margin-bottom: 0;
+    }
+
+    .bottom-sheet__label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .bottom-sheet__value {
+      font-size: 15px;
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+
+    .bottom-sheet__actions {
+      padding: 16px 20px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      gap: 12px;
+    }
+
+    .bottom-sheet__actions .action-btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    /* ── Mobile Responsive (Clean List + Bottom Sheet) ── */
+    @media screen and (max-width: 767px) {
+      body {
+        overflow-x: hidden;
+      }
+
+      .events-layout {
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
+      }
+
+      /* Sidebar becomes ultra-compact horizontal filter bar */
+      .events-sidebar {
+        width: 100%;
+        height: auto !important;
+        max-height: none !important;
+        padding: 6px 8px;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        gap: 4px;
+        overflow: hidden !important;
+        position: static !important;
+        flex-shrink: 0;
+      }
+
+      .events-sidebar * {
+        overflow: visible !important;
+      }
+
+      .btn-create {
+        height: 30px;
+        font-size: 12px;
+        padding: 0 8px;
+        gap: 3px;
+        flex-shrink: 0;
+      }
+
+      .btn-create svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      /* Ultra-compact horizontal filter layout */
+      .filter-panel {
+        padding: 0;
+        border: none;
+        background: transparent;
+        display: flex;
+        gap: 3px;
+        overflow-x: auto;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        flex-shrink: 0;
+      }
+
+      .filter-panel::-webkit-scrollbar {
+        display: none;
+      }
+
+      .filter-title {
+        display: none;
+      }
+
+      .filter-option {
+        padding: 4px 8px;
+        font-size: 11px;
+        border-radius: 3px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+      }
+
+      .filter-option.is-active {
+        border-color: var(--color-primary);
+      }
+
+      .filter-icon {
+        width: 11px;
+        height: 11px;
+      }
+
+      .events-main {
+        padding: 0;
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      /* Ultra-compact top bar */
+      .events-topbar {
+        padding: 6px 8px;
+        margin-bottom: 0;
+        gap: 4px;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        flex-direction: column;
+        align-items: stretch;
+        flex-shrink: 0;
+      }
+
+      .events-title {
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      /* Full-width search */
+      .search-input {
+        width: 100%;
+        height: 30px;
+        font-size: 12px;
+        padding: 0 8px;
+      }
+
+      /* Mobile Event List - Clean and Simple */
+      .events-list {
+        padding: 8px;
+        gap: 6px;
+      }
+
+      .event-card {
+        padding: 12px 16px;
+        border-radius: 6px;
+        min-height: 60px;
+        cursor: pointer;
+      }
+
+      .event-card:hover {
+        transform: none;
+        box-shadow: 0 1px 4px rgba(16, 185, 129, 0.1);
+      }
+
+      .event-card__content {
+        gap: 4px;
+      }
+
+      .event-card__header {
+        gap: 8px;
+        margin-bottom: 2px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .event-card__title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .type-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 8px;
+      }
+
+      /* Mobile: Show only basic info */
+      .event-card__meta {
+        gap: 12px;
+        font-size: 12px;
+        color: var(--color-text-muted);
+      }
+
+      .event-card__meta-icon {
+        width: 12px;
+        height: 12px;
+      }
+
+      /* Hide desktop actions on mobile */
+      .event-card__actions {
+        display: none;
+      }
+
+      .empty-state {
+        padding: 20px 12px;
+      }
+
+      .empty-state__icon {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 6px;
+      }
+
+      .empty-state__text {
+        font-size: 11px;
+      }
+
+      /* Modal - Full screen on mobile */
+      .event-modal {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .event-modal__box {
+        max-width: 100%;
+        border-radius: 6px 6px 0 0;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .event-modal__header {
+        padding: 8px 10px;
+      }
+
+      .event-modal__title {
+        font-size: 12px;
+      }
+
+      .event-modal__close {
+        width: 24px;
+        height: 24px;
+      }
+
+      .event-modal__body {
+        padding: 10px;
+        gap: 8px;
+      }
+
+      .event-field {
+        gap: 3px;
+      }
+
+      .event-field label {
+        font-size: 10px;
+      }
+
+      .event-field input,
+      .event-field select {
+        height: 30px;
+        font-size: 12px;
+        padding: 0 8px;
+      }
+
+      .event-field textarea {
+        height: 50px;
+        font-size: 12px;
+        padding: 6px 8px;
+      }
+
+      .event-modal__footer {
+        padding: 0 10px 10px;
+        gap: 4px;
+      }
+
+      .btn-save,
+      .btn-cancel {
+        height: 30px;
+        font-size: 12px;
+      }
+
+      .btn-cancel {
+        padding: 0 10px;
+      }
+    }
+
+    /* Tablet adjustments (Ultra-Compact) */
+    @media screen and (min-width: 768px) and (max-width: 1023px) {
+      .events-layout {
+        padding: 6px;
+        gap: 6px;
+      }
+
+      .events-sidebar {
+        width: 180px;
+      }
+
+      .btn-create {
+        height: 28px;
+        font-size: 11px;
+        padding: 0 8px;
+      }
+
+      .filter-panel {
+        padding: 4px;
+      }
+
+      .filter-option {
+        padding: 4px 6px;
+        font-size: 11px;
+      }
+
+      .events-topbar {
+        margin-bottom: 6px;
+      }
+
+      .events-title {
+        font-size: 13px;
+      }
+
+      .search-input {
+        width: 180px;
+        height: 26px;
+        font-size: 11px;
+      }
+
+      .event-card {
+        padding: 6px 8px;
+        gap: 6px;
+        min-height: 34px;
+      }
+
+      .event-card__title {
+        font-size: 13px;
+      }
+
+      .event-card__meta {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar-overlay"></div>
+    <div id="sidebar-container"></div>
+    <div class="app-main">
+      <div class="events-layout">
+        <!-- Left Sidebar -->
+        <aside class="events-sidebar">
+          <button class="btn-create" id="btn-create">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Create Event
+          </button>
+
+          <div class="filter-panel">
+            <div class="filter-title">Filters</div>
+            <div class="filter-option is-active" data-filter="all">
+              <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+              </svg>
+              All Events
+            </div>
+            <div class="filter-option" data-filter="upcoming">
+              <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+              Upcoming
+            </div>
+            <div class="filter-option" data-filter="past">
+              <svg class="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              Past
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="events-main">
+          <div class="events-topbar">
+            <h1 class="events-title">Events</h1>
+            <input
+              type="text"
+              class="search-input"
+              id="search-input"
+              placeholder="Search events..."
+            />
+          </div>
+
+          <div class="events-list" id="events-list">
+            <!-- Events will be loaded here -->
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create / Edit Modal -->
+  <div class="event-modal" id="event-modal" hidden>
+    <div class="event-modal__backdrop" id="modal-backdrop"></div>
+    <div class="event-modal__box">
+      <div class="event-modal__header">
+        <p class="event-modal__title" id="modal-title">Create Event</p>
+        <button type="button" class="event-modal__close" id="modal-close">✕</button>
+      </div>
+      <div class="event-modal__body">
+        <input type="hidden" id="edit-id" />
+        <div class="event-field">
+          <label for="field-name">Event Name</label>
+          <input id="field-name" type="text" placeholder="e.g. Easter Sunday Service" maxlength="150" />
+        </div>
+        <div class="event-field">
+          <label for="field-date">Date</label>
+          <input id="field-date" type="date" />
+        </div>
+        <div class="event-field">
+          <label for="field-type">Type</label>
+          <select id="field-type">
+            <option value="">Select type</option>
+            <option value="Sunday Service">Sunday Service</option>
+            <option value="Youth Night">Youth Night</option>
+            <option value="Prayer Meeting">Prayer Meeting</option>
+            <option value="Outreach">Outreach</option>
+            <option value="Special">Special</option>
+          </select>
+        </div>
+        <div class="event-field">
+          <label for="field-notes">Notes <span style="font-weight:400;color:var(--color-text-muted)">(optional)</span></label>
+          <textarea id="field-notes" placeholder="Any additional details..."></textarea>
+        </div>
+        <div class="event-modal__error" id="modal-error"></div>
+      </div>
+      <div class="event-modal__footer">
+        <button type="button" class="btn-cancel" id="modal-cancel">Cancel</button>
+        <button type="button" class="btn-save" id="modal-save">Save Event</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Sheet (Mobile Detail View) -->
+  <div class="bottom-sheet" id="bottom-sheet">
+    <div class="bottom-sheet__backdrop" id="bottom-sheet-backdrop"></div>
+    <div class="bottom-sheet__panel">
+      <div class="bottom-sheet__handle"></div>
+      <div class="bottom-sheet__header">
+        <h2 class="bottom-sheet__title" id="bottom-sheet-title">Event Title</h2>
+        <p class="bottom-sheet__subtitle" id="bottom-sheet-subtitle">Event details</p>
+      </div>
+      <div class="bottom-sheet__body">
+        <div class="bottom-sheet__section">
+          <span class="bottom-sheet__label">Date & Time</span>
+          <div class="bottom-sheet__value" id="bottom-sheet-datetime">—</div>
+        </div>
+        <div class="bottom-sheet__section">
+          <span class="bottom-sheet__label">Type</span>
+          <div class="bottom-sheet__value" id="bottom-sheet-type">—</div>
+        </div>
+        <div class="bottom-sheet__section" id="bottom-sheet-attendance-section">
+          <span class="bottom-sheet__label">Attendance</span>
+          <div class="bottom-sheet__value" id="bottom-sheet-attendance">—</div>
+        </div>
+        <div class="bottom-sheet__section" id="bottom-sheet-notes-section" style="display: none;">
+          <span class="bottom-sheet__label">Notes</span>
+          <div class="bottom-sheet__value" id="bottom-sheet-notes">—</div>
+        </div>
+      </div>
+      <div class="bottom-sheet__actions">
+        <button class="action-btn" id="bottom-sheet-edit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Edit
+        </button>
+        <button class="action-btn action-btn--delete" id="bottom-sheet-delete">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/loader.js"></script>
+  <script src="/assets/js/auth.js"></script>
+  <script src="/assets/js/app-init.js"></script>
+  <script>
+    // Initialize app before running page code
+    (async function() {
+      try {
+        await AppInit.init();
+        initEvents();
+      } catch (err) {
+        console.error('[EVENTS] Initialization failed:', err);
+      }
+    })();
+
+    function initEvents() {
+      console.log('[EVENTS] Starting page initialization...');
+
+      let allEvents = [];
+      let currentFilter = 'all';
+
+      function getHeaders() {
+        return Auth.getHeaders();
+      }
+
+      function handle401(res) {
+        return Auth.handle401(res);
+      }
+
+      const TYPE_CLASSES = {
+        'Sunday Service': 'type-badge--sunday',
+        'Youth Night':    'type-badge--youth',
+        'Prayer Meeting': 'type-badge--prayer',
+        'Outreach':       'type-badge--outreach',
+        'Special':        'type-badge--special'
+      };
+
+      function formatDate(val) {
+        if (!val) return '—';
+        const d = new Date(val);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+
+      function formatTime(val) {
+        if (!val) return '';
+        const d = new Date(val);
+        return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      }
+
+      function getStatus(dateStr) {
+        const today = new Date(); today.setHours(0,0,0,0);
+        const ev = new Date(dateStr); ev.setHours(0,0,0,0);
+        if (ev.getTime() === today.getTime()) return 'today';
+        return ev < today ? 'completed' : 'upcoming';
+      }
+
+      function showToast(message, type) {
+        const t = document.createElement('div');
+        t.className = `toast ${type}`;
+        t.innerHTML = `<span class="toast__icon">${type === 'success' ? '✓' : '✕'}</span><span>${message}</span><span class="toast__progress"></span>`;
+        document.body.appendChild(t);
+        setTimeout(() => { t.classList.add('is-hiding'); setTimeout(() => t.remove(), 250); }, 3000);
+      }
+
+      function renderEvents(events) {
+        const list = document.getElementById('events-list');
+        list.innerHTML = '';
+
+        if (!events || events.length === 0) {
+          list.innerHTML = `
+            <div class="empty-state">
+              <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+              </svg>
+              <p class="empty-state__text">No events found</p>
+            </div>
+          `;
+          return;
+        }
+
+        const todayStr = new Date().toISOString().slice(0, 10);
+
+        events.forEach(ev => {
+          const status = getStatus(ev.event_date);
+          const evDateStr = ev.event_date ? ev.event_date.slice(0, 10) : '';
+          const isToday = evDateStr === todayStr;
+          
+          // Format attendance count
+          const attendanceCount = parseInt(ev.attendance_count, 10) || 0;
+          const attendanceText = attendanceCount === 0 ? 'No attendees' : 
+                                 attendanceCount === 1 ? '1 attendee' : 
+                                 `${attendanceCount} attendees`;
+
+          const card = document.createElement('div');
+          card.className = `event-card${isToday ? ' is-today' : ''}`;
+          
+          card.innerHTML = `
+            <div class="event-card__content">
+              <div class="event-card__header">
+                <h3 class="event-card__title">${ev.event_name}</h3>
+                <span class="type-badge ${TYPE_CLASSES[ev.event_type] || ''}">${ev.event_type}</span>
+              </div>
+              <div class="event-card__meta">
+                <div class="event-card__meta-item">
+                  <svg class="event-card__meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <path d="M16 2v4M8 2v4M3 10h18"/>
+                  </svg>
+                  ${formatDate(ev.event_date)}
+                </div>
+                <div class="event-card__meta-item">
+                  <svg class="event-card__meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                  ${attendanceCount} ${attendanceCount === 1 ? 'attendee' : 'attendees'}
+                </div>
+              </div>
+            </div>
+            <div class="event-card__actions">
+              <button class="action-btn" title="Edit" data-action="edit"
+                data-id="${ev.id}" data-name="${ev.event_name}"
+                data-date="${evDateStr}" data-type="${ev.event_type}"
+                data-notes="${(ev.notes || '').replace(/"/g, '&quot;')}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Edit
+              </button>
+              <button class="action-btn action-btn--delete" title="Delete" data-action="delete"
+                data-id="${ev.id}" data-name="${ev.event_name}" data-count="${attendanceCount}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                  <path d="M10 11v6M14 11v6"/>
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                </svg>
+                Delete
+              </button>
+            </div>
+          `;
+
+          // Store event data for bottom sheet
+          card.dataset.eventData = JSON.stringify({
+            id: ev.id,
+            name: ev.event_name,
+            date: evDateStr,
+            type: ev.event_type,
+            notes: ev.notes || '',
+            attendance: attendanceCount
+          });
+
+          list.appendChild(card);
+        });
+      }
+
+      function filterEvents() {
+        let filtered = allEvents;
+
+        if (currentFilter === 'upcoming') {
+          const today = new Date(); today.setHours(0,0,0,0);
+          filtered = allEvents.filter(ev => {
+            const evDate = new Date(ev.event_date); evDate.setHours(0,0,0,0);
+            return evDate >= today;
+          });
+        } else if (currentFilter === 'past') {
+          const today = new Date(); today.setHours(0,0,0,0);
+          filtered = allEvents.filter(ev => {
+            const evDate = new Date(ev.event_date); evDate.setHours(0,0,0,0);
+            return evDate < today;
+          });
+        }
+
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        if (searchTerm) {
+          filtered = filtered.filter(ev => 
+            ev.event_name.toLowerCase().includes(searchTerm) ||
+            ev.event_type.toLowerCase().includes(searchTerm) ||
+            (ev.notes && ev.notes.toLowerCase().includes(searchTerm))
+          );
+        }
+
+        renderEvents(filtered);
+      }
+
+      async function loadEvents() {
+        const list = document.getElementById('events-list');
+        list.innerHTML = '<div class="empty-state"><p class="empty-state__text">Loading...</p></div>';
+        
+        try {
+          const res = await fetch('/api/events', { headers: getHeaders() });
+          if (handle401(res)) return;
+          const data = await res.json();
+          
+          if (!res.ok || !Array.isArray(data.events)) {
+            allEvents = [];
+          } else {
+            allEvents = data.events;
+            console.log('[EVENTS] Loaded events with attendance counts:', 
+              allEvents.map(e => ({ 
+                name: e.event_name, 
+                date: e.event_date, 
+                count: e.attendance_count 
+              }))
+            );
+          }
+          
+          filterEvents();
+        } catch (err) {
+          console.error('[EVENTS] Failed to load events:', err);
+          list.innerHTML = '<div class="empty-state"><p class="empty-state__text">Could not load events</p></div>';
+        }
+      }
+
+      // Filter buttons
+      document.querySelectorAll('.filter-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-option').forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          currentFilter = btn.dataset.filter;
+          filterEvents();
+        });
+      });
+
+      // Search input
+      document.getElementById('search-input').addEventListener('input', filterEvents);
+
+      // Modal
+      const modal = document.getElementById('event-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const errorEl = document.getElementById('modal-error');
+      const saveBtn = document.getElementById('modal-save');
+
+      function openModal(data) {
+        document.getElementById('edit-id').value = data ? data.id : '';
+        document.getElementById('field-name').value = data ? data.name : '';
+        document.getElementById('field-date').value = data ? data.date : '';
+        document.getElementById('field-type').value = data ? data.type : '';
+        document.getElementById('field-notes').value = data ? data.notes : '';
+        modalTitle.textContent = data ? 'Edit Event' : 'Create Event';
+        saveBtn.textContent = data ? 'Save Changes' : 'Save Event';
+        errorEl.style.opacity = '0';
+        modal.removeAttribute('hidden');
+        document.getElementById('field-name').focus();
+      }
+
+      function closeModal() { modal.setAttribute('hidden', ''); }
+
+      document.getElementById('btn-create').addEventListener('click', () => openModal(null));
+      document.getElementById('modal-close').addEventListener('click', closeModal);
+      document.getElementById('modal-cancel').addEventListener('click', closeModal);
+      document.getElementById('modal-backdrop').addEventListener('click', closeModal);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !modal.hasAttribute('hidden')) closeModal();
+      });
+
+      saveBtn.addEventListener('click', async () => {
+        const id = document.getElementById('edit-id').value;
+        const event_name = document.getElementById('field-name').value.trim();
+        const event_date = document.getElementById('field-date').value;
+        const event_type = document.getElementById('field-type').value;
+        const notes = document.getElementById('field-notes').value.trim();
+
+        if (!event_name || !event_date || !event_type) {
+          errorEl.textContent = 'Event name, date, and type are required';
+          errorEl.style.opacity = '1';
+          return;
+        }
+
+        saveBtn.disabled = true;
+        const isEdit = !!id;
+        const url = isEdit ? `/api/events/${id}` : '/api/events';
+        const method = isEdit ? 'PUT' : 'POST';
+
+        try {
+          const res = await fetch(url, {
+            method,
+            headers: getHeaders(),
+            body: JSON.stringify({ event_name, event_date, event_type, notes: notes || null })
+          });
+          const data = await res.json();
+          if (data.status === 'success') {
+            closeModal();
+            showToast(isEdit ? 'Event updated' : 'Event created', 'success');
+            loadEvents();
+          } else {
+            errorEl.textContent = data.message || 'Failed to save event';
+            errorEl.style.opacity = '1';
+          }
+        } catch {
+          errorEl.textContent = 'Failed to save event';
+          errorEl.style.opacity = '1';
+        }
+        saveBtn.disabled = false;
+      });
+
+      // Bottom Sheet functionality
+      const bottomSheet = document.getElementById('bottom-sheet');
+      const bottomSheetBackdrop = document.getElementById('bottom-sheet-backdrop');
+      
+      function openBottomSheet(eventData) {
+        document.getElementById('bottom-sheet-title').textContent = eventData.name;
+        document.getElementById('bottom-sheet-subtitle').textContent = eventData.type;
+        document.getElementById('bottom-sheet-datetime').textContent = formatDate(eventData.date);
+        document.getElementById('bottom-sheet-type').textContent = eventData.type;
+        document.getElementById('bottom-sheet-attendance').textContent = 
+          `${eventData.attendance} ${eventData.attendance === 1 ? 'attendee' : 'attendees'}`;
+        
+        const notesSection = document.getElementById('bottom-sheet-notes-section');
+        if (eventData.notes) {
+          document.getElementById('bottom-sheet-notes').textContent = eventData.notes;
+          notesSection.style.display = 'block';
+        } else {
+          notesSection.style.display = 'none';
+        }
+        
+        // Set up action buttons
+        const editBtn = document.getElementById('bottom-sheet-edit');
+        const deleteBtn = document.getElementById('bottom-sheet-delete');
+        
+        editBtn.onclick = () => {
+          closeBottomSheet();
+          openModal({
+            id: eventData.id,
+            name: eventData.name,
+            date: eventData.date,
+            type: eventData.type,
+            notes: eventData.notes
+          });
+        };
+        
+        deleteBtn.onclick = () => {
+          closeBottomSheet();
+          const msg = eventData.attendance > 0
+            ? `Delete "${eventData.name}"?\n\nThis event has ${eventData.attendance} attendance record${eventData.attendance !== 1 ? 's' : ''} on that date. The attendance records will remain but will no longer be linked to this event.`
+            : `Delete "${eventData.name}"?`;
+          if (!confirm(msg)) return;
+          
+          fetch(`/api/events/${eventData.id}`, { method: 'DELETE', headers: getHeaders() })
+            .then(r => r.json())
+            .then(d => {
+              if (d.status === 'success') {
+                showToast('Event deleted', 'success');
+                loadEvents();
+              } else {
+                showToast(d.message || 'Delete failed', 'error');
+              }
+            })
+            .catch(() => showToast('Delete failed', 'error'));
+        };
+        
+        bottomSheet.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeBottomSheet() {
+        bottomSheet.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+      
+      // Bottom sheet event listeners
+      bottomSheetBackdrop.addEventListener('click', closeBottomSheet);
+      document.querySelector('.bottom-sheet__handle').addEventListener('click', closeBottomSheet);
+
+      // Event actions
+      document.getElementById('events-list').addEventListener('click', e => {
+        const btn = e.target.closest('[data-action]');
+        const card = e.target.closest('.event-card');
+        
+        // Handle mobile bottom sheet (only on mobile screens)
+        if (card && !btn && window.innerWidth <= 767) {
+          const eventData = JSON.parse(card.dataset.eventData);
+          openBottomSheet(eventData);
+          return;
+        }
+        
+        if (!btn) return;
+        
+        if (btn.dataset.action === 'edit') {
+          openModal({
+            id: btn.dataset.id,
+            name: btn.dataset.name,
+            date: btn.dataset.date,
+            type: btn.dataset.type,
+            notes: btn.dataset.notes
+          });
+        }
+        
+        if (btn.dataset.action === 'delete') {
+          const count = parseInt(btn.dataset.count, 10);
+          const msg = count > 0
+            ? `Delete "${btn.dataset.name}"?\n\nThis event has ${count} attendance record${count !== 1 ? 's' : ''} on that date. The attendance records will remain but will no longer be linked to this event.`
+            : `Delete "${btn.dataset.name}"?`;
+          if (!confirm(msg)) return;
+          
+          fetch(`/api/events/${btn.dataset.id}`, { method: 'DELETE', headers: getHeaders() })
+            .then(r => r.json())
+            .then(d => {
+              if (d.status === 'success') {
+                showToast('Event deleted', 'success');
+                loadEvents();
+              } else {
+                showToast(d.message || 'Delete failed', 'error');
+              }
+            })
+            .catch(() => showToast('Delete failed', 'error'));
+        }
+      });
+
+      loadEvents();
+      
+      // Handle window resize and escape key
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 767) {
+          // Close bottom sheet when switching to desktop
+          closeBottomSheet();
+        }
+      });
+      
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          if (!bottomSheet.classList.contains('is-open')) return;
+          closeBottomSheet();
+        }
+      });
+      
+      console.log('[EVENTS] Page initialization complete');
+    }
+  </script>
+</body>
+</html>
