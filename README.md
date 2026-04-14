@@ -250,7 +250,7 @@ A comprehensive web-based attendance management system for Word of Hope Caloocan
 ## Default Login Credentials
 
 **Email:** admin@wordofhope.org  
-**Password:** admin123  
+**Password:** Gospel_316  
 
 **Note:** Change the default password immediately after first login for security purposes.
 
