@@ -488,8 +488,8 @@ DB_PASSWORD=very_secure_password_here
 
 1. **Clone or download the project**
    ```bash
-   git clone <repository-url>
-   cd woh-attendance
+   git clone https://github.com/NiessenWaffer/Full-stack-wohattendance.git
+   cd Full-stack-wohattendance
    ```
 
 2. **Install dependencies**
