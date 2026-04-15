@@ -1,7 +1,6 @@
 const express = require('express');
 const crypto = require('crypto');
 const promisePool = require('./db').promisePool;
-const { registerLimiter } = require('./limits');
 const router = express.Router();
 const ALLOWED_MINISTRIES = new Set([
   'Multimedia',
@@ -32,7 +31,7 @@ async function generateUniqueQr() {
   }
   throw new Error('Unique qr_code unavailable');
 }
-router.post('/register', registerLimiter, async (req, res) => {
+router.post('/register', async (req, res) => {
   let first_name =
     req.body && typeof req.body.first_name === 'string'
       ? req.body.first_name.trim()

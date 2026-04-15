@@ -13,4 +13,4 @@ DELETE FROM admins WHERE display_name = '' OR display_name IS NULL;
 SET SQL_SAFE_UPDATES = 1;
 
 INSERT IGNORE INTO admins (email, password, display_name, role)
-VALUES ('admin@wordofhope.org', '$2a$10$1oneuJdzCIypzZPKI99eSubXUSnDWxulNNURwcHbstja/iSYVlY9.', 'Admin', 'admin');
+VALUES ('admin@wordofhope.org', '$2a$10$n3CnEo5fvRvSXa2Z6SV82O5xyABsmfT7jHgSK0RImnToNdobj9TXC', 'Admin', 'admin');

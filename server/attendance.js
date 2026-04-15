@@ -1,6 +1,5 @@
 const express = require('express');
 const promisePool = require('./db').promisePool;
-const { scanLimiter } = require('./limits');
 const router = express.Router();
 
 const ACTIVE_THRESHOLD = 3;
@@ -27,7 +26,7 @@ async function updateMemberEngagement(memberId, isFirstAttendance) {
   }
 }
 
-router.post('/scan', scanLimiter, async (req, res) => {
+router.post('/scan', async (req, res) => {
   const qr_code = req.body && typeof req.body.qr_code === 'string' ? req.body.qr_code.trim() : '';
   if (!qr_code) {
     return res.status(400).json({ status: 'error', message: 'qr_code is required' });

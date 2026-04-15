@@ -804,15 +804,46 @@
 
           // ── Desktop table row ──
           const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${m.first_name} ${m.last_name}</strong></td>
-            <td>${statusBadge}</td>
-            <td><span class="ministry-badge">${m.ministry}</span></td>
-            <td><span class="qr-code-text">${m.qr_code}</span></td>
-            <td class="col-muted">${formatDate(m.registered_at)}</td>
-            <td class="col-muted">${m.attendance_count ?? 0}</td>
-            ${!isWorker ? `<td class="col-actions">
-              <div class="action-btns">
+          
+          const nameCell = document.createElement('td');
+          const nameStrong = document.createElement('strong');
+          nameStrong.textContent = `${m.first_name} ${m.last_name}`;
+          nameCell.appendChild(nameStrong);
+          
+          const statusCell = document.createElement('td');
+          statusCell.innerHTML = statusBadge; // statusBadge is safe HTML
+          
+          const ministryCell = document.createElement('td');
+          const ministrySpan = document.createElement('span');
+          ministrySpan.className = 'ministry-badge';
+          ministrySpan.textContent = m.ministry;
+          ministryCell.appendChild(ministrySpan);
+          
+          const qrCell = document.createElement('td');
+          const qrSpan = document.createElement('span');
+          qrSpan.className = 'qr-code-text';
+          qrSpan.textContent = m.qr_code;
+          qrCell.appendChild(qrSpan);
+          
+          const dateCell = document.createElement('td');
+          dateCell.className = 'col-muted';
+          dateCell.textContent = formatDate(m.registered_at);
+          
+          const countCell = document.createElement('td');
+          countCell.className = 'col-muted';
+          countCell.textContent = m.attendance_count ?? 0;
+          
+          tr.appendChild(nameCell);
+          tr.appendChild(statusCell);
+          tr.appendChild(ministryCell);
+          tr.appendChild(qrCell);
+          tr.appendChild(dateCell);
+          tr.appendChild(countCell);
+          
+          if (!isWorker) {
+            const actionsCell = document.createElement('td');
+            actionsCell.className = 'col-actions';
+            actionsCell.innerHTML = `<div class="action-btns">
                 <button class="action-btn" title="Edit" data-action="edit"
                   data-id="${m.id}" data-first="${m.first_name}" data-last="${m.last_name}"
                   data-ministry="${m.ministry}" data-status="${m.status}">
@@ -821,33 +852,115 @@
                 <button class="action-btn action-btn--delete" title="Delete" data-action="delete" data-id="${m.id}" data-name="${m.first_name} ${m.last_name}">
                   <svg viewBox="0 0 24 24" fill="none"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>
                 </button>
-              </div>
-            </td>` : ''}`;
+              </div>`;
+            tr.appendChild(actionsCell);
+          }
           tbody.appendChild(tr);
 
           // ── Mobile accordion card ──
           const card = document.createElement('div');
           card.className = 'm-card';
-          card.innerHTML = `
-            <div class="m-card__summary">
-              <span class="m-card__name">${m.first_name} ${m.last_name}</span>
-              ${statusBadge}
-            </div>
-            <div class="m-card__details">
-              <div class="m-card__details-inner">
-                <div class="m-card__row"><span class="m-label">Ministry</span><span class="m-value">${m.ministry}</span></div>
-                <div class="m-card__row"><span class="m-label">QR Code</span><span class="m-value" style="font-family:monospace;font-size:11px">${m.qr_code}</span></div>
-                <div class="m-card__row"><span class="m-label">Attended</span><span class="m-value">${m.attendance_count ?? 0} times</span></div>
-                <div class="m-card__row"><span class="m-label">Joined</span><span class="m-value">${formatDate(m.registered_at)}</span></div>
-                <div class="m-card__actions">
-                  ${!isWorker ? `<button class="m-action-btn" data-action="edit"
-                    data-id="${m.id}" data-first="${m.first_name}" data-last="${m.last_name}"
-                    data-ministry="${m.ministry}" data-status="${m.status}">Edit</button>` : ''}
-                  ${!isWorker ? `<button class="m-action-btn m-action-btn--delete" data-action="delete"
-                    data-id="${m.id}" data-name="${m.first_name} ${m.last_name}">Delete</button>` : ''}
-                </div>
-              </div>
-            </div>`;
+          
+          // Create summary section
+          const summary = document.createElement('div');
+          summary.className = 'm-card__summary';
+          
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'm-card__name';
+          nameSpan.textContent = `${m.first_name} ${m.last_name}`;
+          summary.appendChild(nameSpan);
+          summary.innerHTML += statusBadge; // statusBadge is safe HTML
+          
+          // Create details section
+          const details = document.createElement('div');
+          details.className = 'm-card__details';
+          
+          const detailsInner = document.createElement('div');
+          detailsInner.className = 'm-card__details-inner';
+          
+          // Ministry row
+          const ministryRow = document.createElement('div');
+          ministryRow.className = 'm-card__row';
+          const ministryLabel = document.createElement('span');
+          ministryLabel.className = 'm-label';
+          ministryLabel.textContent = 'Ministry';
+          const ministryValue = document.createElement('span');
+          ministryValue.className = 'm-value';
+          ministryValue.textContent = m.ministry;
+          ministryRow.appendChild(ministryLabel);
+          ministryRow.appendChild(ministryValue);
+          
+          // QR Code row
+          const qrRow = document.createElement('div');
+          qrRow.className = 'm-card__row';
+          const qrLabel = document.createElement('span');
+          qrLabel.className = 'm-label';
+          qrLabel.textContent = 'QR Code';
+          const qrValue = document.createElement('span');
+          qrValue.className = 'm-value';
+          qrValue.style.fontFamily = 'monospace';
+          qrValue.style.fontSize = '11px';
+          qrValue.textContent = m.qr_code;
+          qrRow.appendChild(qrLabel);
+          qrRow.appendChild(qrValue);
+          
+          // Attendance row
+          const attendanceRow = document.createElement('div');
+          attendanceRow.className = 'm-card__row';
+          const attendanceLabel = document.createElement('span');
+          attendanceLabel.className = 'm-label';
+          attendanceLabel.textContent = 'Attended';
+          const attendanceValue = document.createElement('span');
+          attendanceValue.className = 'm-value';
+          attendanceValue.textContent = `${m.attendance_count ?? 0} times`;
+          attendanceRow.appendChild(attendanceLabel);
+          attendanceRow.appendChild(attendanceValue);
+          
+          // Joined row
+          const joinedRow = document.createElement('div');
+          joinedRow.className = 'm-card__row';
+          const joinedLabel = document.createElement('span');
+          joinedLabel.className = 'm-label';
+          joinedLabel.textContent = 'Joined';
+          const joinedValue = document.createElement('span');
+          joinedValue.className = 'm-value';
+          joinedValue.textContent = formatDate(m.registered_at);
+          joinedRow.appendChild(joinedLabel);
+          joinedRow.appendChild(joinedValue);
+          
+          // Actions
+          const actions = document.createElement('div');
+          actions.className = 'm-card__actions';
+          if (!isWorker) {
+            const editBtn = document.createElement('button');
+            editBtn.className = 'm-action-btn';
+            editBtn.setAttribute('data-action', 'edit');
+            editBtn.setAttribute('data-id', m.id);
+            editBtn.setAttribute('data-first', m.first_name);
+            editBtn.setAttribute('data-last', m.last_name);
+            editBtn.setAttribute('data-ministry', m.ministry);
+            editBtn.setAttribute('data-status', m.status);
+            editBtn.textContent = 'Edit';
+            actions.appendChild(editBtn);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'm-action-btn m-action-btn--delete';
+            deleteBtn.setAttribute('data-action', 'delete');
+            deleteBtn.setAttribute('data-id', m.id);
+            deleteBtn.setAttribute('data-name', `${m.first_name} ${m.last_name}`);
+            deleteBtn.textContent = 'Delete';
+            actions.appendChild(deleteBtn);
+          }
+          
+          detailsInner.appendChild(ministryRow);
+          detailsInner.appendChild(qrRow);
+          detailsInner.appendChild(attendanceRow);
+          detailsInner.appendChild(joinedRow);
+          detailsInner.appendChild(actions);
+          details.appendChild(detailsInner);
+          
+          card.appendChild(summary);
+          card.appendChild(details);
 
           card.querySelector('.m-card__summary').addEventListener('click', () => {
             const isOpen = card.classList.contains('is-open');

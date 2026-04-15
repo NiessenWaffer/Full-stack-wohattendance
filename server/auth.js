@@ -42,7 +42,6 @@ router.post('/login', loginLimiter, async (req, res) => {
       return res.status(401).json({ status: 'error', message: GENERIC_AUTH_ERROR });
     }
     const admin = rows[0];
-    console.log('[AUTH] hash in DB:', admin.password);
     const isValidPassword = await bcrypt.compare(password, admin.password);
     console.log('[AUTH] bcrypt.compare result:', isValidPassword);
     if (!isValidPassword) {

@@ -222,7 +222,17 @@
         if (countEl) countEl.textContent = `${rows.length} present`;
         rows.forEach(r => {
           const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${r.first_name} ${r.last_name}</td><td class="col-ministry">${r.ministry}</td><td class="col-time">${formatTime(r.attendance_time)}</td>`;
+          const nameCell = document.createElement('td');
+          nameCell.textContent = `${r.first_name} ${r.last_name}`;
+          const ministryCell = document.createElement('td');
+          ministryCell.className = 'col-ministry';
+          ministryCell.textContent = r.ministry;
+          const timeCell = document.createElement('td');
+          timeCell.className = 'col-time';
+          timeCell.textContent = formatTime(r.attendance_time);
+          tr.appendChild(nameCell);
+          tr.appendChild(ministryCell);
+          tr.appendChild(timeCell);
           tbody.appendChild(tr);
         });
       } catch (err) {
