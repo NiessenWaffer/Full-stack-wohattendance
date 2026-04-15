@@ -85,7 +85,7 @@
 
     .kpi-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+      box-shadow: var(--shadow-lg, 0 8px 16px rgba(0,0,0,0.12));
     }
 
     .kpi-card:hover::before {
@@ -160,7 +160,7 @@
 
     .ministry-chart-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+      box-shadow: var(--shadow-lg, 0 8px 16px rgba(0,0,0,0.12));
       border-color: var(--color-primary-light);
     }
 
@@ -396,13 +396,13 @@
 
     .ministry-stat-card:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.1));
       border-color: var(--color-primary);
     }
 
     .ministry-stat-card--highlight {
-      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-      border-color: var(--color-primary);
+      background: var(--color-ministry-highlight-bg, linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%));
+      border-color: var(--color-ministry-highlight-border, var(--color-primary));
     }
 
     .ministry-stat-icon {
@@ -664,8 +664,8 @@
     }
 
     .calendar__day--selected { 
-      background: var(--color-primary); 
-      color: #fff; 
+      background: var(--color-calendar-selected-bg, var(--color-primary)); 
+      color: var(--color-calendar-selected-text, #fff); 
       font-weight: 600; 
     }
 

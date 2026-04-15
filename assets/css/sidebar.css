@@ -28,6 +28,7 @@ body {
   min-height: calc(100vh - var(--header-height));
   background: var(--color-surface-hover);
   overflow-x: hidden;
+  position: relative;
 }
 
 /* ── Sidebar ── */
@@ -348,6 +349,7 @@ body {
   flex-direction: column;
   align-items: stretch;
   overflow-x: hidden;
+  position: relative;
 }
 
 /* ── Tablet (768–1023px) ── */
@@ -370,7 +372,7 @@ body {
 @media screen and (max-width: 767px) {
   :root { --sidebar-width: 240px; }
 
-  .app-main { margin-left: 0; }
+  .app-main { margin-left: 0; position: relative; }
 
   .app-topbar {
     left: 0;

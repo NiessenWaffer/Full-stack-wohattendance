@@ -10,7 +10,7 @@
     el.style.cssText = [
       'position:absolute', 'top:0', 'left:0',
       'width:100%', 'height:100%',
-      'z-index:50',
+      'z-index:90',
       'display:flex',
       'flex-direction:column',
       'align-items:center',
@@ -38,7 +38,7 @@
           '-webkit-backdrop-filter:blur(8px);',
         '}',
         '[data-theme="dark"] .page-loader{',
-          'background:rgba(31,41,55,0.95);',
+          'background:rgba(17,24,39,0.95);',
         '}',
         '.page-loader-spinner{',
           'width:24px;height:24px;',
@@ -64,20 +64,18 @@
   function showLoader() {
     if (!_el) createLoader();
     
-    // Find the app-main container (main content area)
-    var appMain = document.querySelector('.app-main');
-    if (!appMain) {
-      console.warn('[LOADER] No .app-main container found');
-      return;
+    // Find content container (.app-main or .dashboard__main) and ensure it's positioned
+    var contentContainer = document.querySelector('.app-main, .dashboard__main');
+    if (!contentContainer) {
+      // Fallback to body if no content container found
+      contentContainer = document.body;
+    } else {
+      // Ensure content container is positioned relative
+      contentContainer.style.position = 'relative';
     }
-
-    // Make sure app-main has relative positioning for absolute loader
-    if (getComputedStyle(appMain).position === 'static') {
-      appMain.style.position = 'relative';
-    }
-
-    // Insert loader into app-main (not body)
-    appMain.appendChild(_el);
+    
+    // Insert loader into content container
+    contentContainer.appendChild(_el);
     _el.style.display = 'flex';
     _el.style.opacity = '1';
     

@@ -80,11 +80,102 @@
   --color-border: #374151;
   --color-border-light: #4b5563;
   
+  /* Extended color palette for dark mode */
+  --color-scanner-bg: #111827;
+  --color-scanner-surface: #1f2937;
+  --color-scanner-border: #374151;
+  --color-scanner-text: #f9fafb;
+  --color-scanner-muted: #9ca3af;
+  --color-scanner-success: #10b981;
+  --color-scanner-warning: #f59e0b;
+  --color-scanner-danger: #ef4444;
+  --color-scanner-info: #3b82f6;
+  
+  /* Status colors for dark mode */
+  --color-status-visitor-bg: #7c2d12;
+  --color-status-visitor-text: #fdba74;
+  --color-status-active-bg: #065f46;
+  --color-status-active-text: #6ee7b7;
+  
+  /* Toast/Message colors for dark mode */
+  --color-toast-success-bg: #064e3b;
+  --color-toast-success-border: #10b981;
+  --color-toast-success-text: #a7f3d0;
+  --color-toast-error-bg: #7f1d1d;
+  --color-toast-error-border: #ef4444;
+  --color-toast-error-text: #fca5a5;
+  --color-toast-warning-bg: #78350f;
+  --color-toast-warning-border: #f59e0b;
+  --color-toast-warning-text: #fde68a;
+  --color-toast-info-bg: #1e3a8a;
+  --color-toast-info-border: #3b82f6;
+  --color-toast-info-text: #93c5fd;
+  
+  /* Input placeholder color for dark mode */
+  --color-input-placeholder: #6b7280;
+  
+  /* Button colors for dark mode */
+  --color-button-primary-bg: #10b981;
+  --color-button-primary-text: #ffffff;
+  --color-button-secondary-bg: #374151;
+  --color-button-secondary-text: #d1d5db;
+  --color-button-danger-bg: #7f1d1d;
+  --color-button-danger-text: #fca5a5;
+  
+  /* Modal overlay colors */
+  --color-modal-overlay: rgba(0, 0, 0, 0.75);
+  --color-modal-backdrop: rgba(0, 0, 0, 0.5);
+  
+  /* QR code container */
+  --color-qr-container-bg: #1f2937;
+  --color-qr-container-border: #374151;
+  
+  /* ID card colors */
+  --color-id-card-bg: #1f2937;
+  --color-id-card-border: rgba(229, 231, 235, 0.1);
+  --color-id-card-right-bg: #111827;
+  
+  /* Offline sync badge */
+  --color-offline-bg: #78350f;
+  --color-offline-border: #f59e0b;
+  --color-offline-text: #fde68a;
+  
+  /* Calendar colors */
+  --color-calendar-selected-bg: #10b981;
+  --color-calendar-selected-text: #ffffff;
+  --color-calendar-today-text: #10b981;
+  --color-calendar-has-data: #10b981;
+  
+  /* Chart colors */
+  --color-chart-primary: #10b981;
+  --color-chart-success: #059669;
+  --color-chart-warning: #d97706;
+  --color-chart-info: #2563eb;
+  
+  /* Ministry stat card highlight */
+  --color-ministry-highlight-bg: rgba(16, 185, 129, 0.15);
+  --color-ministry-highlight-border: #10b981;
+  
+  /* Section icon colors */
+  --color-icon-email-bg: #1e3a8a;
+  --color-icon-email-text: #60a5fa;
+  --color-icon-password-bg: #78350f;
+  --color-icon-password-text: #fbbf24;
+  --color-icon-general-bg: #374151;
+  --color-icon-general-text: #9ca3af;
+  
+  /* Shadows for dark mode */
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.5);
+  
+  /* Component-specific shadows */
+  --shadow-scanner-modal: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-id-card: 0 6px 28px rgba(0, 0, 0, 0.3);
+  --shadow-registration-card: 0 2px 12px rgba(0, 0, 0, 0.2);
+  --shadow-settings-card: 0 1px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Smooth theme transition */
