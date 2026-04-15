@@ -1,19 +1,10 @@
+/* Attendance page styles - theme variables come from theme.css */
 :root {
-  --color-primary: #10b981;
-  --color-page-bg: #f3f4f6;
-  --color-surface: #ffffff;
-  --color-text: #1f2937;
-  --color-text-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --color-row-alt: #f9fafb;
-  --color-hover-bg: #f9fafb;
-  --color-badge-bg: #ecfdf5;
-  --color-time: #6b7280;
-  --radius-card: 12px;
-  --radius-control: 8px;
+  --color-row-alt: var(--color-surface-hover);
+  --color-hover-bg: var(--color-surface-hover);
+  --color-badge-bg: var(--color-primary-50);
+  --color-time: var(--color-text-muted);
   --radius-badge: 20px;
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
-  --font-sans: "Inter", sans-serif;
 }
 
 *,

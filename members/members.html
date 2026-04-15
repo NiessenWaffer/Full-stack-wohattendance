@@ -7,23 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/theme.css" />
   <link rel="stylesheet" href="/assets/css/sidebar.css" />
   <style>
+    /* Page-specific styles - theme variables come from theme.css */
     :root {
-      --color-primary: #10b981;
-      --color-page-bg: #f3f4f6;
-      --color-surface: #ffffff;
-      --color-text: #1f2937;
-      --color-text-muted: #6b7280;
-      --color-border: #e5e7eb;
-      --color-row-alt: #f9fafb;
-      --color-hover-bg: #f9fafb;
-      --color-badge-bg: #ecfdf5;
-      --radius-card: 12px;
-      --radius-control: 8px;
-      --shadow-card: 0 4px 24px rgba(0,0,0,0.08);
-      --font-sans: "Inter", sans-serif;
+      --color-row-alt: var(--color-surface-hover);
+      --color-hover-bg: var(--color-surface-hover);
+      --color-badge-bg: var(--color-primary-50);
     }
+    
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; min-height: 100%; }
     body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-page-bg); -webkit-font-smoothing: antialiased; }
@@ -618,6 +611,45 @@
         font-size: 12px; cursor: pointer;
       }
     }
+
+    /* ── Extra small mobile (479px and below) ── */
+    @media screen and (max-width: 479px) {
+      .m-edit-form {
+        padding: 3px 3px 5px !important;
+        gap: 2px !important;
+      }
+
+      .m-edit-form input,
+      .m-edit-form select {
+        height: 30px !important;
+        padding: 0 6px !important;
+        font-size: 10px !important;
+        border-radius: 4px !important;
+      }
+
+      .m-edit-form__error {
+        font-size: 8px !important;
+        min-height: 10px !important;
+      }
+
+      .m-edit-form__btns {
+        gap: 4px !important;
+        margin-top: 2px !important;
+      }
+
+      .m-edit-form__save {
+        height: 28px !important;
+        font-size: 10px !important;
+        border-radius: 4px !important;
+      }
+
+      .m-edit-form__cancel {
+        height: 28px !important;
+        padding: 0 8px !important;
+        font-size: 10px !important;
+        border-radius: 4px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -721,6 +753,9 @@
     </div>
   </div>
 
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/toast.js"></script>
+  <script src="/assets/js/skeleton.js"></script>
   <script src="/assets/js/loader.js"></script>
   <script src="/assets/js/auth.js"></script>
   <script src="/assets/js/app-init.js"></script>

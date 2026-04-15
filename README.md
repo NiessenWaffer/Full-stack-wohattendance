@@ -796,6 +796,65 @@ WHERE email = 'admin@wordofhope.org';
 - Export to PDF and Excel
 - Automated backup system
 
+## Kiro AI Development Environment
+
+This project includes a production-grade Kiro steering configuration designed for safe, consistent AI-assisted development.
+
+### Steering Configuration Structure
+
+```
+.kiro/steering/
+├── core.md              # Project identity and tech stack
+├── rules.md             # Core behavior principles
+├── workflow.md          # Development process
+├── safety.md            # System safety rules
+├── coding-standards.md  # Code style and conventions
+└── backend-safety.md    # Backend-specific safety rules
+```
+
+### Key Features
+
+✅ **Dependency Analysis** - Before any code changes  
+✅ **Impact Assessment** - System-wide effect evaluation  
+✅ **Backend Protection** - Special rules for critical backend files  
+✅ **Security Preservation** - JWT, bcrypt, and auth flow protection  
+✅ **Mobile Compatibility** - Responsive design maintenance  
+
+### Development Workflow
+
+The AI assistant follows a strict 5-step process:
+
+1. **Understand** - Clarify request requirements
+2. **Identify** - Map affected components
+3. **Check** - Validate dependencies before changes
+4. **Plan** - Design solution in minimal steps
+5. **Execute** - Implement changes incrementally with validation
+
+### Safety Guardrails
+
+- **Database Schema Protection** - No schema changes without explicit confirmation
+- **Authentication Security** - JWT and bcrypt implementations are protected
+- **API Consistency** - Request/response structure validation
+- **Backward Compatibility** - Maintained unless explicitly allowed
+- **Minimal Changes** - Only modify what's necessary for the task
+
+### Code Standards Enforcement
+
+- ES6+ JavaScript with consistent patterns
+- Mobile-first responsive design
+- Parameterized database queries
+- Proper error handling and input validation
+- Security-first approach with bcrypt and JWT
+
+### Benefits for Developers
+
+- **Reduced Risk** - Multiple safety layers prevent breaking changes
+- **Consistency** - Standardized approach across all AI-assisted tasks
+- **Maintainability** - Clear separation of concerns in steering files
+- **Reliability** - Production-grade stability focus
+
+This steering configuration ensures that AI assistance maintains the project's architecture, security standards, and coding conventions while preventing accidental breaking changes.
+
 ## Developer Notes
 
 - **MySQL Credentials:** Configure in `.env` file or use defaults (root/Youth2025)

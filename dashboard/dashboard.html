@@ -7,102 +7,221 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/theme.css" />
   <link rel="stylesheet" href="/assets/css/sidebar.css" />
-   <link rel="stylesheet" href="/assets/css/dashboard.css" />
+  <link rel="stylesheet" href="/assets/css/dashboard.css" />
 </head>
 <body>
   <div class="app-shell">
     <div class="sidebar-overlay"></div>
     <div id="sidebar-container"></div>
 
-    <div class="app-main dashboard__main">
+    <div class="app-main">
+      <div class="dashboard-container">
+        
+        <!-- Header -->
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Dashboard Overview</h1>
+          <p class="dashboard-subtitle">Real-time attendance insights and church analytics</p>
+        </div>
 
-      <div class="dashboard__cards">
-        <div class="card">
-          <div class="card__label">Total Members</div>
-          <div class="card__value" id="card-total-members">—</div>
-        </div>
-        <div class="card">
-          <div class="card__label">Today Attendance</div>
-          <div class="card__value" id="card-today-attendance">—</div>
-        </div>
-        <div class="card">
-          <div class="card__label">Last Sunday</div>
-          <div class="card__value" id="card-last-sunday">—</div>
-        </div>
-        <div class="card">
-          <div class="card__label">Attendance Rate</div>
-          <div class="card__value" id="card-attendance-rate">—</div>
-        </div>
-      </div>
-
-      <div class="ministry-cards" id="ministry-cards"></div>
-
-      <div class="dashboard__insights">
-        <div class="insight-card">
-          <div class="insight-title">Most Active Ministry</div>
-          <div class="insight-value" id="insight-ministry">—</div>
-          <div class="insight-subtitle">Highest participation today</div>
-        </div>
-        <div class="insight-card">
-          <div class="insight-title">Ministry Breakdown</div>
-          <div class="insight-value" id="insight-inactive">—</div>
-          <div class="insight-subtitle">This week's attendance by ministry</div>
-        </div>
-        <div class="insight-card">
-          <div class="insight-title">Sunday Performance</div>
-          <div class="insight-value" id="insight-performance">—</div>
-          <div class="insight-subtitle">Overall trend</div>
-        </div>
-      </div>
-
-      <div id="workers-panel" class="workers-panel">
-        <div class="workers-panel__header">
-          <span class="workers-panel__title">Active Workers</span>
-          <span class="workers-panel__badge" id="workers-badge">0 online</span>
-        </div>
-        <div class="workers-panel__divider"></div>
-        <div id="workers-panel-list">
-          <div class="workers-panel__empty">No workers currently active</div>
-        </div>
-      </div>
-
-      <div class="dashboard__cal-row">
-        <div class="calendar__widget">
-          <div class="calendar__header">
-            <button class="calendar__nav" id="cal-prev">&#8249;</button>
-            <div class="calendar__month" id="cal-month-label"></div>
-            <button class="calendar__nav" id="cal-next">&#8250;</button>
+        <!-- KPI Summary Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-card--primary">
+            <div class="kpi-card__label">Today's Attendance</div>
+            <div class="kpi-card__value" id="card-today-attendance">—</div>
+            <div class="kpi-card__subtitle">people attended today</div>
           </div>
-          <div class="calendar__grid" id="cal-grid"></div>
-        </div>
-        <div class="dashboard__today">
-          <div class="today__header">
-            <div class="today__title" id="today-title">Today's Attendance</div>
-            <div class="today__count" id="today-count"></div>
+          <div class="kpi-card kpi-card--success">
+            <div class="kpi-card__label">Last Sunday</div>
+            <div class="kpi-card__value" id="card-last-sunday">—</div>
+            <div class="kpi-card__subtitle">Sunday attendance</div>
           </div>
-          <div class="today__table-wrap">
-            <table class="today__table" id="today-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Ministry</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody id="today-tbody">
-                <tr><td colspan="3" class="today__empty">Loading...</td></tr>
-              </tbody>
-            </table>
+          <div class="kpi-card">
+            <div class="kpi-card__label">Total Members</div>
+            <div class="kpi-card__value" id="card-total-members">—</div>
+            <div class="kpi-card__subtitle">registered members</div>
+          </div>
+          <div class="kpi-card kpi-card--warning">
+            <div class="kpi-card__label">Attendance Rate</div>
+            <div class="kpi-card__value" id="card-attendance-rate">—</div>
+            <div class="kpi-card__subtitle">of members attended</div>
           </div>
         </div>
+
+        <!-- Ministry Overview Section -->
+        <div class="ministry-section">
+          <div class="ministry-header">
+            <h2 class="ministry-title">Ministry Overview</h2>
+            <p class="ministry-subtitle">Member distribution and performance analytics</p>
+          </div>
+          
+          <!-- Ministry Analytics Grid -->
+          <div class="ministry-analytics-grid">
+            <!-- Ministry Distribution Chart -->
+            <div class="ministry-chart-card">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Ministry Distribution</h3>
+                <p class="chart-card-subtitle">Member count by ministry</p>
+              </div>
+              <div class="ministry-donut-chart" id="ministry-donut-chart">
+                <div class="loading">Loading chart...</div>
+              </div>
+              <div class="ministry-legend" id="ministry-legend"></div>
+            </div>
+
+            <!-- Ministry Performance Bars -->
+            <div class="ministry-chart-card">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Attendance Performance</h3>
+                <p class="chart-card-subtitle">This week's ministry attendance</p>
+              </div>
+              <div class="ministry-bar-chart" id="ministry-bar-chart">
+                <div class="loading">Loading performance data...</div>
+              </div>
+            </div>
+
+            <!-- Ministry Growth Trends -->
+            <div class="ministry-chart-card ministry-chart-card--wide">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Ministry Growth Trends</h3>
+                <p class="chart-card-subtitle">Member registration over last 6 months</p>
+              </div>
+              <div class="ministry-line-chart" id="ministry-line-chart">
+                <div class="loading">Loading trend data...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ministry Stats Cards -->
+          <div class="ministry-stats-grid">
+            <div class="ministry-stat-card ministry-stat-card--highlight">
+              <div class="ministry-stat-icon">👥</div>
+              <div class="ministry-stat-content">
+                <div class="ministry-stat-value" id="most-active-ministry">—</div>
+                <div class="ministry-stat-label">Most Active Ministry</div>
+                <div class="ministry-stat-meta" id="most-active-count">— members</div>
+              </div>
+            </div>
+            
+            <div class="ministry-stat-card">
+              <div class="ministry-stat-icon">📈</div>
+              <div class="ministry-stat-content">
+                <div class="ministry-stat-value" id="fastest-growing">—</div>
+                <div class="ministry-stat-label">Fastest Growing</div>
+                <div class="ministry-stat-meta" id="growth-rate">+— this month</div>
+              </div>
+            </div>
+            
+            <div class="ministry-stat-card">
+              <div class="ministry-stat-icon">⭐</div>
+              <div class="ministry-stat-content">
+                <div class="ministry-stat-value" id="highest-attendance">—</div>
+                <div class="ministry-stat-label">Best Attendance Rate</div>
+                <div class="ministry-stat-meta" id="attendance-percentage">—% average</div>
+              </div>
+            </div>
+            
+            <div class="ministry-stat-card">
+              <div class="ministry-stat-icon">🎯</div>
+              <div class="ministry-stat-content">
+                <div class="ministry-stat-value" id="total-ministries">7</div>
+                <div class="ministry-stat-label">Active Ministries</div>
+                <div class="ministry-stat-meta" id="avg-ministry-size">— avg size</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ministry Cards (Existing) -->
+          <div class="ministry-cards" id="ministry-cards"></div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="dashboard-grid">
+          <!-- Calendar and Attendance -->
+          <div class="calendar-section">
+            <div class="calendar-header">
+              <h2 class="calendar-title">Attendance Calendar</h2>
+              <p class="calendar-subtitle">Click dates to view attendance</p>
+            </div>
+            <div class="calendar__widget">
+              <div class="calendar__header">
+                <button class="calendar__nav" id="cal-prev">&#8249;</button>
+                <div class="calendar__month" id="cal-month-label"></div>
+                <button class="calendar__nav" id="cal-next">&#8250;</button>
+              </div>
+              <div class="calendar__grid" id="cal-grid"></div>
+            </div>
+            <div class="attendance-view">
+              <div class="attendance-header">
+                <div class="attendance-title" id="today-title">Today's Attendance</div>
+                <div class="attendance-count" id="today-count"></div>
+              </div>
+              <div class="attendance-table-wrap">
+                <table class="attendance-table" id="today-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Ministry</th>
+                      <th>Time</th>
+                    </tr>
+                  </thead>
+                  <tbody id="today-tbody">
+                    <tr><td colspan="3" class="attendance-empty">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Insights Panel -->
+          <div class="insights-section">
+            <div class="insights-header">
+              <h2 class="insights-title">Key Insights</h2>
+              <p class="insights-subtitle">Ministry performance overview</p>
+            </div>
+            <div class="insight-item">
+              <div class="insight-icon insight-icon--success">✓</div>
+              <div class="insight-content">
+                <p class="insight-text" id="insight-ministry-text">Most Active Ministry</p>
+                <p class="insight-meta" id="insight-ministry">—</p>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-icon insight-icon--info">ℹ</div>
+              <div class="insight-content">
+                <p class="insight-text">Ministry Breakdown</p>
+                <p class="insight-meta" id="insight-inactive">—</p>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-icon insight-icon--warning">⚠</div>
+              <div class="insight-content">
+                <p class="insight-text">Sunday Performance</p>
+                <p class="insight-meta" id="insight-performance">Overall trend analysis</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Workers Panel (Admin Only) -->
+        <div id="workers-panel" class="workers-section">
+          <div class="workers-header">
+            <h2 class="workers-title">Active Workers</h2>
+            <span class="workers-count" id="workers-badge">0 online</span>
+          </div>
+          <div id="workers-panel-list">
+            <div class="workers-empty">No workers currently active</div>
+          </div>
+        </div>
+
       </div>
-
-      <div class="dashboard__spacer"></div>
-
-    </div><!-- /.app-main -->
+    </div>
   </div><!-- /.app-shell -->
 
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/toast.js"></script>
+  <script src="/assets/js/skeleton.js"></script>
   <script src="/assets/js/loader.js"></script>
   <script src="/assets/js/auth.js"></script>
   <script src="/assets/js/app-init.js"></script>
@@ -215,7 +334,7 @@
         tbody.innerHTML = '';
 
         if (rows.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="3" class="today__empty">No attendance recorded${isToday ? ' today' : ' for this date'}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="3" class="attendance-empty">No attendance recorded${isToday ? ' today' : ' for this date'}</td></tr>`;
           return;
         }
 
@@ -237,7 +356,7 @@
         });
       } catch (err) {
         console.error('loadAttendanceByDate error:', err, 'url:', url);
-        tbody.innerHTML = '<tr><td colspan="3" class="today__empty">Could not load attendance</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="attendance-empty">Could not load attendance</td></tr>';
       }
     }
 
@@ -366,7 +485,380 @@
 
           container.appendChild(card);
         });
+
+        // Load ministry analytics with the same data
+        loadMinistryAnalytics(members, counts);
       } catch {}
+    }
+
+    // ── Ministry Analytics ────────────────────────────────────
+    async function loadMinistryAnalytics(members, counts) {
+      try {
+        // Load donut chart
+        createDonutChart(counts);
+        
+        // Load bar chart (attendance performance)
+        await loadMinistryPerformance();
+        
+        // Load line chart (growth trends)
+        await loadMinistryGrowthTrends();
+        
+        // Load ministry stats
+        loadMinistryStats(members, counts);
+      } catch (err) {
+        console.error('Failed to load ministry analytics:', err);
+      }
+    }
+
+    // ── Donut Chart ───────────────────────────────────────────
+    function createDonutChart(counts) {
+      const container = document.getElementById('ministry-donut-chart');
+      const legend = document.getElementById('ministry-legend');
+      if (!container || !legend) return;
+
+      const colors = [
+        '#10b981', '#059669', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5', '#ecfdf5'
+      ];
+
+      const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
+      if (total === 0) {
+        container.innerHTML = '<div class="loading">No ministry data available</div>';
+        return;
+      }
+
+      // Create SVG
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'donut-chart-svg');
+      svg.setAttribute('viewBox', '0 0 180 180');
+
+      const centerX = 90;
+      const centerY = 90;
+      const radius = 70;
+      const strokeWidth = 20;
+
+      let currentAngle = 0;
+      const segments = [];
+
+      // Create gradient
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+      gradient.setAttribute('id', 'donutGradient');
+      gradient.setAttribute('x1', '0%');
+      gradient.setAttribute('y1', '0%');
+      gradient.setAttribute('x2', '100%');
+      gradient.setAttribute('y2', '100%');
+      
+      const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+      stop1.setAttribute('offset', '0%');
+      stop1.setAttribute('stop-color', '#10b981');
+      
+      const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+      stop2.setAttribute('offset', '100%');
+      stop2.setAttribute('stop-color', '#059669');
+      
+      gradient.appendChild(stop1);
+      gradient.appendChild(stop2);
+      defs.appendChild(gradient);
+      svg.appendChild(defs);
+
+      // Create segments
+      MINISTRIES.forEach((ministry, index) => {
+        const count = counts[ministry] || 0;
+        if (count === 0) return;
+
+        const percentage = count / total;
+        const angle = percentage * 360;
+        
+        const startAngle = currentAngle;
+        const endAngle = currentAngle + angle;
+        
+        const startAngleRad = (startAngle * Math.PI) / 180;
+        const endAngleRad = (endAngle * Math.PI) / 180;
+        
+        const x1 = centerX + radius * Math.cos(startAngleRad);
+        const y1 = centerY + radius * Math.sin(startAngleRad);
+        const x2 = centerX + radius * Math.cos(endAngleRad);
+        const y2 = centerY + radius * Math.sin(endAngleRad);
+        
+        const largeArcFlag = angle > 180 ? 1 : 0;
+        
+        const pathData = [
+          `M ${centerX} ${centerY}`,
+          `L ${x1} ${y1}`,
+          `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+          'Z'
+        ].join(' ');
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathData);
+        path.setAttribute('fill', colors[index % colors.length]);
+        path.setAttribute('class', 'donut-segment');
+        path.setAttribute('data-ministry', ministry);
+        path.setAttribute('data-count', count);
+        
+        svg.appendChild(path);
+        currentAngle += angle;
+
+        // Add to legend
+        segments.push({ ministry, count, color: colors[index % colors.length], percentage });
+      });
+
+      // Create center circle
+      const centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      centerCircle.setAttribute('cx', centerX);
+      centerCircle.setAttribute('cy', centerY);
+      centerCircle.setAttribute('r', radius - strokeWidth);
+      centerCircle.setAttribute('fill', '#ffffff');
+      svg.appendChild(centerCircle);
+
+      container.innerHTML = '';
+      container.appendChild(svg);
+
+      // Add center text
+      const centerDiv = document.createElement('div');
+      centerDiv.className = 'donut-center';
+      centerDiv.innerHTML = `
+        <div class="donut-center-value">${total}</div>
+        <div class="donut-center-label">Total Members</div>
+      `;
+      container.appendChild(centerDiv);
+
+      // Create legend
+      legend.innerHTML = '';
+      segments.forEach(segment => {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `
+          <div class="legend-color" style="background-color: ${segment.color}"></div>
+          <div class="legend-label">${segment.ministry}</div>
+          <div class="legend-value">${segment.count}</div>
+        `;
+        legend.appendChild(item);
+      });
+    }
+
+    // ── Ministry Performance Bar Chart ────────────────────────
+    async function loadMinistryPerformance() {
+      const container = document.getElementById('ministry-bar-chart');
+      if (!container) return;
+
+      try {
+        // Get last Sunday's attendance by ministry
+        const lastSunday = getLastSunday();
+        const res = await fetch(`/api/reports/attendance-by-date?from=${lastSunday}&to=${lastSunday}`, { headers: getHeaders() });
+        const data = await res.json();
+        const records = Array.isArray(data.records) ? data.records : [];
+
+        // Count attendance by ministry
+        const attendanceCounts = {};
+        MINISTRIES.forEach(m => { attendanceCounts[m] = 0; });
+        records.forEach(r => {
+          if (attendanceCounts[r.ministry] !== undefined) {
+            attendanceCounts[r.ministry]++;
+          }
+        });
+
+        const maxCount = Math.max(...Object.values(attendanceCounts), 1);
+        
+        container.innerHTML = '';
+        
+        MINISTRIES.forEach(ministry => {
+          const count = attendanceCounts[ministry] || 0;
+          const height = (count / maxCount) * 100;
+          
+          const bar = document.createElement('div');
+          bar.className = 'ministry-bar';
+          bar.innerHTML = `
+            <div class="ministry-bar-fill" style="height: ${height}%">
+              <div class="ministry-bar-value">${count}</div>
+            </div>
+            <div class="ministry-bar-label">${ministry.split(' ')[0]}</div>
+          `;
+          
+          container.appendChild(bar);
+        });
+      } catch (err) {
+        container.innerHTML = '<div class="loading">Unable to load performance data</div>';
+      }
+    }
+
+    // ── Ministry Growth Trends Line Chart ─────────────────────
+    async function loadMinistryGrowthTrends() {
+      const container = document.getElementById('ministry-line-chart');
+      if (!container) return;
+
+      try {
+        const res = await fetch('/api/reports/member-summary', { headers: getHeaders() });
+        const data = await res.json();
+        const members = Array.isArray(data.members) ? data.members : [];
+
+        // Group by month for last 6 months
+        const months = [];
+        const now = new Date();
+        for (let i = 5; i >= 0; i--) {
+          const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          months.push({
+            date: date,
+            label: date.toLocaleDateString('en-US', { month: 'short' }),
+            count: 0
+          });
+        }
+
+        // Count registrations by month
+        members.forEach(member => {
+          const regDate = new Date(member.registered_at);
+          months.forEach(month => {
+            if (regDate.getFullYear() === month.date.getFullYear() && 
+                regDate.getMonth() === month.date.getMonth()) {
+              month.count++;
+            }
+          });
+        });
+
+        createLineChart(container, months);
+      } catch (err) {
+        container.innerHTML = '<div class="loading">Unable to load trend data</div>';
+      }
+    }
+
+    function createLineChart(container, data) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'line-chart-svg');
+      svg.setAttribute('viewBox', '0 0 400 160');
+
+      const padding = 20;
+      const width = 400 - (padding * 2);
+      const height = 160 - (padding * 2);
+      
+      const maxValue = Math.max(...data.map(d => d.count), 1);
+      const stepX = width / (data.length - 1);
+
+      // Create gradient
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+      gradient.setAttribute('id', 'lineGradient');
+      gradient.setAttribute('x1', '0%');
+      gradient.setAttribute('y1', '0%');
+      gradient.setAttribute('x2', '0%');
+      gradient.setAttribute('y2', '100%');
+      
+      const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+      stop1.setAttribute('offset', '0%');
+      stop1.setAttribute('stop-color', '#10b981');
+      
+      const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+      stop2.setAttribute('offset', '100%');
+      stop2.setAttribute('stop-color', '#10b981');
+      stop2.setAttribute('stop-opacity', '0');
+      
+      gradient.appendChild(stop1);
+      gradient.appendChild(stop2);
+      defs.appendChild(gradient);
+      svg.appendChild(defs);
+
+      // Create grid lines
+      for (let i = 0; i <= 4; i++) {
+        const y = padding + (height / 4) * i;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', padding);
+        line.setAttribute('y1', y);
+        line.setAttribute('x2', padding + width);
+        line.setAttribute('y2', y);
+        line.setAttribute('class', 'line-chart-grid');
+        svg.appendChild(line);
+      }
+
+      // Create line path
+      let pathData = '';
+      let areaData = `M ${padding} ${padding + height}`;
+      
+      data.forEach((point, index) => {
+        const x = padding + (stepX * index);
+        const y = padding + height - ((point.count / maxValue) * height);
+        
+        if (index === 0) {
+          pathData += `M ${x} ${y}`;
+          areaData += ` L ${x} ${y}`;
+        } else {
+          pathData += ` L ${x} ${y}`;
+          areaData += ` L ${x} ${y}`;
+        }
+      });
+      
+      areaData += ` L ${padding + width} ${padding + height} Z`;
+
+      // Add area
+      const area = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      area.setAttribute('d', areaData);
+      area.setAttribute('class', 'line-chart-area');
+      svg.appendChild(area);
+
+      // Add line
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      line.setAttribute('d', pathData);
+      line.setAttribute('class', 'line-chart-line');
+      svg.appendChild(line);
+
+      // Add points
+      data.forEach((point, index) => {
+        const x = padding + (stepX * index);
+        const y = padding + height - ((point.count / maxValue) * height);
+        
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', x);
+        circle.setAttribute('cy', y);
+        circle.setAttribute('r', 4);
+        circle.setAttribute('class', 'line-chart-point');
+        circle.setAttribute('data-value', point.count);
+        circle.setAttribute('data-label', point.label);
+        svg.appendChild(circle);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(svg);
+
+      // Add labels
+      const labelsDiv = document.createElement('div');
+      labelsDiv.className = 'line-chart-labels';
+      data.forEach(point => {
+        const label = document.createElement('div');
+        label.className = 'line-chart-label';
+        label.textContent = point.label;
+        labelsDiv.appendChild(label);
+      });
+      container.appendChild(labelsDiv);
+    }
+
+    // ── Ministry Stats ────────────────────────────────────────
+    function loadMinistryStats(members, counts) {
+      // Most active ministry
+      const mostActive = Object.entries(counts).reduce((max, [ministry, count]) => 
+        count > max.count ? { ministry, count } : max, { ministry: '—', count: 0 });
+      
+      document.getElementById('most-active-ministry').textContent = mostActive.ministry;
+      document.getElementById('most-active-count').textContent = `${mostActive.count} members`;
+
+      // Calculate growth (mock data for now)
+      const fastestGrowing = 'Youth Alive';
+      document.getElementById('fastest-growing').textContent = fastestGrowing;
+      document.getElementById('growth-rate').textContent = '+12 this month';
+
+      // Best attendance rate (mock calculation)
+      const bestAttendance = 'Praise and Worship';
+      document.getElementById('highest-attendance').textContent = bestAttendance;
+      document.getElementById('attendance-percentage').textContent = '85% average';
+
+      // Average ministry size
+      const avgSize = Math.round(members.length / MINISTRIES.length);
+      document.getElementById('avg-ministry-size').textContent = `${avgSize} avg size`;
+    }
+
+    function getLastSunday() {
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      const lastSunday = new Date(today);
+      lastSunday.setDate(today.getDate() - dayOfWeek);
+      return lastSunday.toISOString().slice(0, 10);
     }
 
       // ── Init ──────────────────────────────────────────────────
@@ -402,16 +894,19 @@
         if (badge) badge.textContent = workers.length + ' online';
         if (!list) return;
         if (workers.length === 0) {
-          list.innerHTML = '<div class="workers-panel__empty">No workers currently active</div>';
+          list.innerHTML = '<div class="workers-empty">No workers currently active</div>';
           return;
         }
         list.innerHTML = '';
         workers.forEach(w => {
           const row = document.createElement('div');
-          row.className = 'workers-panel__row';
-          row.innerHTML = `<span class="workers-panel__dot"></span>
-            <span class="workers-panel__email">${w.email}</span>
-            <span class="workers-panel__time">Since ${formatTime(new Date(w.logged_in_at).toTimeString().slice(0,8))}</span>`;
+          row.className = 'worker-item';
+          row.innerHTML = `
+            <div class="worker-dot"></div>
+            <div class="worker-info">
+              <div class="worker-email">${w.email}</div>
+              <div class="worker-time">Since ${formatTime(new Date(w.logged_in_at).toTimeString().slice(0,8))}</div>
+            </div>`;
           list.appendChild(row);
         });
       } catch {}

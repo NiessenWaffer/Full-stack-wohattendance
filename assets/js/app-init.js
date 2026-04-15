@@ -129,6 +129,9 @@ const AppInit = {
         link.classList.add('is-active');
       }
     });
+    
+    // Initialize sidebar notifications
+    this.initSidebarNotifications();
   },
 
   initAdminInfo() {
@@ -395,6 +398,191 @@ const AppInit = {
         if (window.innerWidth < 768) closeSidebar();
       });
     });
+  },
+  
+  initSidebarNotifications() {
+    const notifLink = document.getElementById('sidebar-notifications');
+    const badge = document.getElementById('sidebar-notif-badge');
+    
+    if (!notifLink) return;
+    
+    const self = this;
+    
+    // Fetch notification count
+    this.fetchNotificationCount();
+    
+    // Refresh count every minute
+    setInterval(() => {
+      this.fetchNotificationCount();
+    }, 60000);
+    
+    // Handle click
+    notifLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      self.showNotificationPanel();
+    });
+  },
+  
+  async fetchNotificationCount() {
+    try {
+      const response = await fetch('/api/notifications', {
+        headers: Auth.getHeaders()
+      });
+      
+      if (Auth.handle401(response)) return;
+      if (!response.ok) return;
+      
+      const data = await response.json();
+      const badge = document.getElementById('sidebar-notif-badge');
+      
+      if (badge && data.unread_count > 0) {
+        badge.textContent = data.unread_count > 9 ? '9+' : data.unread_count;
+        badge.style.display = 'flex';
+      } else if (badge) {
+        badge.style.display = 'none';
+      }
+    } catch (err) {
+      console.error('[APP-INIT] Failed to fetch notification count:', err);
+    }
+  },
+  
+  showNotificationPanel() {
+    // Create modal overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'notif-modal-overlay';
+    overlay.style.cssText = [
+      'position:fixed',
+      'inset:0',
+      'background:rgba(0,0,0,0.5)',
+      'z-index:1000',
+      'display:flex',
+      'align-items:center',
+      'justify-content:center',
+      'animation:fade-in 0.2s ease'
+    ].join(';');
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'notif-modal';
+    modal.style.cssText = [
+      'background:var(--color-surface)',
+      'border-radius:12px',
+      'width:90%',
+      'max-width:500px',
+      'max-height:80vh',
+      'display:flex',
+      'flex-direction:column',
+      'box-shadow:0 20px 25px rgba(0,0,0,0.15)',
+      'animation:slide-up 0.3s ease'
+    ].join(';');
+    
+    modal.innerHTML = [
+      '<div style="padding:20px;border-bottom:1px solid var(--color-border);display:flex;align-items:center;justify-content:space-between;">',
+        '<h3 style="margin:0;font-size:18px;font-weight:600;color:var(--color-text);">Notifications</h3>',
+        '<button class="notif-close" style="background:none;border:none;width:32px;height:32px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);transition:all 0.2s;">',
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+        '</button>',
+      '</div>',
+      '<div id="notif-modal-list" style="flex:1;overflow-y:auto;padding:12px;">',
+        '<div style="text-align:center;padding:40px 20px;color:var(--color-text-muted);">Loading...</div>',
+      '</div>',
+      '<div style="padding:16px;border-top:1px solid var(--color-border);display:flex;justify-content:center;">',
+        '<button class="notif-mark-all" style="background:none;border:none;color:var(--color-primary);font-size:13px;font-weight:500;cursor:pointer;padding:8px 16px;border-radius:6px;transition:all 0.2s;">Mark all as read</button>',
+      '</div>'
+    ].join('');
+    
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    
+    // Close handlers
+    const closeBtn = modal.querySelector('.notif-close');
+    const markAllBtn = modal.querySelector('.notif-mark-all');
+    
+    const closeModal = () => {
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.remove(), 200);
+    };
+    
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeModal();
+    });
+    
+    markAllBtn.addEventListener('click', () => {
+      const badge = document.getElementById('sidebar-notif-badge');
+      if (badge) badge.style.display = 'none';
+      localStorage.setItem('woh_notif_read', Date.now());
+      if (window.Toast) {
+        Toast.success('Marked as read', 'All notifications marked as read');
+      }
+    });
+    
+    // Load notifications
+    this.loadNotificationsInModal();
+  },
+  
+  async loadNotificationsInModal() {
+    const list = document.getElementById('notif-modal-list');
+    if (!list) return;
+    
+    try {
+      const response = await fetch('/api/notifications', {
+        headers: Auth.getHeaders()
+      });
+      
+      if (Auth.handle401(response)) return;
+      if (!response.ok) throw new Error('Failed to load');
+      
+      const data = await response.json();
+      
+      if (!Array.isArray(data.notifications) || data.notifications.length === 0) {
+        list.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--color-text-muted);">No notifications yet</div>';
+        return;
+      }
+      
+      list.innerHTML = '';
+      
+      data.notifications.forEach(notif => {
+        const item = document.createElement('div');
+        item.style.cssText = [
+          'padding:12px',
+          'border-radius:8px',
+          'margin-bottom:8px',
+          'background:var(--color-surface-hover)',
+          'cursor:pointer',
+          'transition:all 0.2s'
+        ].join(';');
+        
+        let iconColor = 'var(--color-primary)';
+        let iconBg = 'var(--color-primary-50)';
+        if (notif.type === 'registration') {
+          iconColor = 'var(--color-info)';
+          iconBg = '#eff6ff';
+        }
+        
+        item.innerHTML = [
+          '<div style="display:flex;gap:12px;">',
+            '<div style="width:40px;height:40px;border-radius:50%;background:' + iconBg + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
+              '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="' + iconColor + '" stroke-width="2">',
+                notif.type === 'attendance' 
+                  ? '<path d="M20 6L9 17l-5-5"/>'
+                  : '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>',
+              '</svg>',
+            '</div>',
+            '<div style="flex:1;min-width:0;">',
+              '<div style="font-size:14px;font-weight:500;color:var(--color-text);margin-bottom:2px;">' + notif.title + '</div>',
+              (notif.subtitle ? '<div style="font-size:13px;color:var(--color-text-muted);margin-bottom:4px;">' + notif.subtitle + '</div>' : ''),
+              '<div style="font-size:11px;color:var(--color-text-muted);">' + notif.date + ' · ' + notif.time + '</div>',
+            '</div>',
+          '</div>'
+        ].join('');
+        
+        list.appendChild(item);
+      });
+    } catch (err) {
+      console.error('[APP-INIT] Failed to load notifications:', err);
+      list.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--color-text-muted);">Failed to load notifications</div>';
+    }
   }
 };
 

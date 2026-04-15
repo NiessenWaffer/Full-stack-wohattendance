@@ -1,16 +1,6 @@
+/* Registration page styles - theme variables come from theme.css */
 :root {
-  --color-primary: #10b981;
-  --color-primary-dark: #047857;
-  --gradient-primary: linear-gradient(135deg, #10b981 0%, #047857 100%);
-  --color-page-bg: #f3f4f6;
-  --color-surface: #ffffff;
-  --color-text: #1f2937;
-  --color-text-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --radius-card: 16px;
-  --radius-control: 8px;
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
-  --font-sans: "Inter", sans-serif;
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
 }
 
 *, *::before, *::after {

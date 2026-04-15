@@ -6,12 +6,10 @@
     if (document.getElementById('page-loader')) return;
     var el = document.createElement('div');
     el.id = 'page-loader';
+    el.className = 'page-loader';
     el.style.cssText = [
       'position:absolute', 'top:0', 'left:0',
       'width:100%', 'height:100%',
-      'background:rgba(255,255,255,0.95)',
-      'backdrop-filter:blur(8px)',
-      '-webkit-backdrop-filter:blur(8px)',
       'z-index:50',
       'display:flex',
       'flex-direction:column',
@@ -23,22 +21,40 @@
 
     el.innerHTML = [
       '<div style="display:flex;flex-direction:column;align-items:center;">',
-        '<img src="/WOHLOGO.png" alt="Word of Hope Caloocan" style="width:48px;height:48px;margin-bottom:16px;opacity:0.9;" />',
-        '<div id="page-loader-spinner" style="',
-          'width:24px;height:24px;',
-          'border:2px solid #f3f4f6;',
-          'border-top:2px solid #10b981;',
-          'border-radius:50%;',
-          'animation:_loader-spin 0.8s linear infinite;',
-        '"></div>',
-        '<div style="font-family:Inter,sans-serif;font-size:13px;font-weight:500;color:#6b7280;margin-top:12px;">Loading...</div>',
+        '<img src="/WOHLOGO.png" alt="Word of Hope Caloocan" class="page-loader-logo" style="width:48px;height:48px;margin-bottom:16px;opacity:0.9;" />',
+        '<div id="page-loader-spinner" class="page-loader-spinner"></div>',
+        '<div class="page-loader-text" style="font-family:Inter,sans-serif;font-size:13px;font-weight:500;margin-top:12px;">Loading...</div>',
       '</div>'
     ].join('');
 
     if (!document.getElementById('_loader-style')) {
       var style = document.createElement('style');
       style.id = '_loader-style';
-      style.textContent = '@keyframes _loader-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}';
+      style.textContent = [
+        '@keyframes _loader-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}',
+        '.page-loader{',
+          'background:rgba(255,255,255,0.95);',
+          'backdrop-filter:blur(8px);',
+          '-webkit-backdrop-filter:blur(8px);',
+        '}',
+        '[data-theme="dark"] .page-loader{',
+          'background:rgba(31,41,55,0.95);',
+        '}',
+        '.page-loader-spinner{',
+          'width:24px;height:24px;',
+          'border:2px solid var(--color-border-light, #f3f4f6);',
+          'border-top:2px solid var(--color-primary, #10b981);',
+          'border-radius:50%;',
+          'animation:_loader-spin 0.8s linear infinite;',
+        '}',
+        '[data-theme="dark"] .page-loader-spinner{',
+          'border-color:var(--color-border, #374151);',
+          'border-top-color:var(--color-primary-light, #34d399);',
+        '}',
+        '.page-loader-text{',
+          'color:var(--color-text-muted, #6b7280);',
+        '}'
+      ].join('');
       document.head.appendChild(style);
     }
 

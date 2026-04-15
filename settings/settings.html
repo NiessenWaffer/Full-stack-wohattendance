@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/theme.css" />
   <link rel="stylesheet" href="/assets/css/sidebar.css" />
   <link rel="stylesheet" href="/assets/css/settings.css" />
 </head>
@@ -135,6 +136,84 @@
           </div>
         </div>
 
+        <div class="settings-card" id="card-appearance">
+          <h2 class="settings-card__title">Appearance</h2>
+          <div class="settings-row">
+            <div class="settings-row__label">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="width:24px;height:24px;border-radius:6px;background:#f3f4f6;color:#6b7280;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                  </svg>
+                </span>
+                Theme
+              </div>
+              <div class="settings-row__desc" style="margin-top:4px;">Choose your preferred color scheme</div>
+            </div>
+            <div class="settings-row__control">
+              <div class="theme-selector">
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="light" id="theme-light" />
+                  <div class="theme-option-card">
+                    <div class="theme-option-preview theme-option-preview--light">
+                      <div class="theme-preview-bar"></div>
+                      <div class="theme-preview-content">
+                        <div class="theme-preview-box"></div>
+                        <div class="theme-preview-box"></div>
+                      </div>
+                    </div>
+                    <div class="theme-option-label">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                      </svg>
+                      Light
+                    </div>
+                  </div>
+                </label>
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="dark" id="theme-dark" />
+                  <div class="theme-option-card">
+                    <div class="theme-option-preview theme-option-preview--dark">
+                      <div class="theme-preview-bar"></div>
+                      <div class="theme-preview-content">
+                        <div class="theme-preview-box"></div>
+                        <div class="theme-preview-box"></div>
+                      </div>
+                    </div>
+                    <div class="theme-option-label">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                      </svg>
+                      Dark
+                    </div>
+                  </div>
+                </label>
+                <label class="theme-option">
+                  <input type="radio" name="theme" value="auto" id="theme-auto" />
+                  <div class="theme-option-card">
+                    <div class="theme-option-preview theme-option-preview--auto">
+                      <div class="theme-preview-bar"></div>
+                      <div class="theme-preview-content">
+                        <div class="theme-preview-box"></div>
+                        <div class="theme-preview-box"></div>
+                      </div>
+                    </div>
+                    <div class="theme-option-label">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2"/>
+                        <path d="M8 21h8m-4-4v4"/>
+                      </svg>
+                      Auto
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="settings-card" id="card-system-info">
           <h2 class="settings-card__title">System Info</h2>
           <div class="settings-info-row">
@@ -176,6 +255,9 @@
     </div>
   </div>
 
+  <script src="/assets/js/theme.js"></script>
+  <script src="/assets/js/toast.js"></script>
+  <script src="/assets/js/skeleton.js"></script>
   <script src="/assets/js/loader.js"></script>
   <script src="/assets/js/auth.js"></script>
   <script src="/assets/js/app-init.js"></script>
@@ -223,6 +305,9 @@
 
       const threshold = localStorage.getItem('woh_inactive_threshold');
       if (threshold) document.getElementById('inactive-threshold').value = threshold;
+
+      // Initialize theme selector
+      initThemeSelector();
 
       document.getElementById('btn-save-profile').addEventListener('click', function () {
         showMsg('msg-profile', 'Profile saved', 'success');
@@ -347,6 +432,29 @@
         })
           .then(r => r.json())
           .then(data => { if (data.status === 'success') loadWorkers(); });
+      }
+
+      function initThemeSelector() {
+        const savedTheme = localStorage.getItem('woh_theme') || 'auto';
+        const themeRadio = document.getElementById('theme-' + savedTheme);
+        if (themeRadio) themeRadio.checked = true;
+
+        // Listen for theme changes
+        document.querySelectorAll('input[name="theme"]').forEach(radio => {
+          radio.addEventListener('change', function() {
+            const theme = this.value;
+            localStorage.setItem('woh_theme', theme);
+            
+            if (theme === 'auto') {
+              const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+              document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+              document.documentElement.setAttribute('data-theme', theme);
+            }
+            
+            Toast.success('Theme Updated', 'Your theme preference has been saved');
+          });
+        });
       }
 
       console.log('[SETTINGS] Page initialization complete');
